@@ -2,6 +2,12 @@
   "U0067": {
     "user_id": "U0067",
     "total_score": 100,
+    "score_breakdown": {
+      "takeover_part": 60.0,
+      "payment_part": 40.0,
+      "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
+    },
+    "payment_risk": 1.0,
     "level": "매우 위험",
     "exposure_score": 0,
     "takeover_score": 100,
@@ -38,6 +44,12 @@
   "U0043": {
     "user_id": "U0043",
     "total_score": 85,
+    "score_breakdown": {
+      "takeover_part": 45.0,
+      "payment_part": 40.0,
+      "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
+    },
+    "payment_risk": 1.0,
     "level": "매우 위험",
     "exposure_score": 0,
     "takeover_score": 75,
@@ -74,6 +86,12 @@
   "U0340": {
     "user_id": "U0340",
     "total_score": 76,
+    "score_breakdown": {
+      "takeover_part": 36.0,
+      "payment_part": 40.0,
+      "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
+    },
+    "payment_risk": 1.0,
     "level": "위험",
     "exposure_score": 0,
     "takeover_score": 60,

@@ -72,8 +72,11 @@ def badge(data, extra=""):
             font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
   <b>LIVE</b> · 이 화면의 숫자는 <code>FDS_통합_스코어링.ipynb</code>가 계산한
   <code>screen_payload.json</code>에서 주입되었습니다.<br>
-  계정 <b>{data["user_id"]}</b> · 노출 정황 {data["exposure_score"]}점 ·
-  계정 장악 {data["takeover_score"]}점 → 조치 <b>{data["action"]}</b>{extra}
+  계정 <b>{data["user_id"]}</b> → 조치 <b>{data["action"]}</b>{extra}<br>
+  <span style="opacity:.85">종합 <b>{data["total_score"]}</b>
+  = 0.6×계정장악 {data["takeover_score"]}({data["score_breakdown"]["takeover_part"]:g})
+  + 40×결제위험 {data["payment_risk"]}({data["score_breakdown"]["payment_part"]:g})
+  · 노출 정황 {data["exposure_score"]}점은 임계값을 낮추는 데 사용</span>
 </div>
 '''
 
@@ -129,47 +132,32 @@ def render_home_alert(doc):
 
 
 def render_linked(doc):
-    """연결 서비스 화면 — 시도 시각·금액을 실제 값으로 교체"""
-    times   = [c["target"]["time"]   for c in cases if c["target"]]
-    amounts = [c["target"]["amount"] for c in cases if c["target"]]
+    """연결 서비스 목록 — 각 행의 값을 **그 행의 상세 링크가 가리키는 화면과 같은 사례**로 채운다.
 
-    ti = iter(times)
-    def sub_time(m):
-        v = next(ti, None)
-        return f">{v}<" if v else m.group(0)
-    doc = re.sub(r'>0[0-9]:[0-9]{2}<', sub_time, doc)
-
-    ai = iter(amounts)
-    def sub_amt(m):
-        v = next(ai, None)
-        return f">{v:,}원<" if v else m.group(0)
-    doc = re.sub(r'>\d{2,3},\d{3}원<', sub_amt, doc)
-
-    return doc.replace("</body>", badge(cases[0], f"<br>위험 감지 {len(cases)}건") + "</body>", 1)
-
-
-
-
-def render_retry_branch(doc, label):
-    """재감지 분기(B·C·D) — 화면의 시나리오 숫자는 **건드리지 않는다.**
-
-    화면의 "12분"은 사용자가 [유지한다]를 누른 뒤의 경과 시간인데,
-    우리 파이프라인에는 사용자의 유지 선택 이벤트가 없어 계산할 수 없다.
-    없는 값을 지어내는 대신, **그 시나리오가 실측 분포 안에 있다는 근거**를 배지로 덧붙인다.
+    처음에는 목록 순서대로 cases[0], cases[1], cases[2]를 넣었는데,
+    배민의 상세 링크는 shap-explain.html(=cases[2])이라 목록 239,700원 →
+    상세 206,700원으로 값이 어긋났다.
+    HTML에 등장하는 shap-*.html 링크 순서를 읽어 SHAP_MAP으로 되짚어 배정한다.
     """
-    note = (f'''
-<div style="position:fixed;left:12px;bottom:12px;z-index:9999;max-width:360px;
-            padding:10px 12px;border-radius:10px;background:rgba(255,247,237,.97);
-            border:1px solid #FFD9A8;font-size:11px;color:#8A4B08;line-height:1.5;
-            font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
-  <b>근거</b> · {label}<br>
-  실측(합성 데이터 {{n}}건): 계정 탈취 성공 → <b>계정정보 변경</b>까지
-  중앙값 <b>31분</b>(최소 4분) · → <b>사기 결제</b>까지 중앙값 <b>90분</b>(최소 26분)<br>
-  <span style="opacity:.8">화면의 "12분"은 사용자가 [유지한다]를 누른 뒤의 시간이라
-  파이프라인이 계산하지 않습니다. 시나리오 값 그대로 두었습니다.</span>
-</div>
-''').replace("{n}", "19")
-    return doc.replace("</body>", note + "</body>", 1)
+    order = [m for m in re.findall(r'shap-[a-z]+\.html', doc)]
+    seen, seq = set(), []
+    for f in order:                       # 등장 순서 유지, 중복 제거
+        if f not in seen and f in SHAP_MAP:
+            seen.add(f); seq.append(SHAP_MAP[f])
+    if not seq:
+        seq = cases
+
+    ti = iter([c["target"]["time"]   for c in seq if c["target"]])
+    ai = iter([c["target"]["amount"] for c in seq if c["target"]])
+
+    def sub_time(m):
+        v = next(ti, None); return f">{v}<" if v else m.group(0)
+    def sub_amt(m):
+        v = next(ai, None); return f">{v:,}원<" if v else m.group(0)
+
+    doc = re.sub(r'>0[0-9]:[0-9]{2}<', sub_time, doc)
+    doc = re.sub(r'>\d{2,3},\d{3}원<', sub_amt, doc)
+    return doc.replace("</body>", badge(cases[0], f"<br>위험 감지 {len(cases)}건") + "</body>", 1)
 
 
 
