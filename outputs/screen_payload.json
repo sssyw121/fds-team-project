@@ -1,13 +1,55 @@
 {
-  "U0067": {
-    "user_id": "U0067",
-    "total_score": 100,
+  "U0055": {
+    "user_id": "U0055",
+    "total_score": 85,
     "score_breakdown": {
-      "takeover_part": 60.0,
-      "payment_part": 40.0,
+      "takeover_part": 45.0,
+      "payment_part": 39.6,
       "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
     },
-    "payment_risk": 1.0,
+    "payment_risk": 0.991,
+    "level": "매우 위험",
+    "exposure_score": 40,
+    "takeover_score": 75,
+    "target": {
+      "time": "00:54",
+      "merchant": "해외결제",
+      "amount": 120300,
+      "channel": "해외결제"
+    },
+    "reasons": [
+      {
+        "text": "외부에 유출된 정보와 일치하는 항목이 있어요",
+        "contrib": 40
+      },
+      {
+        "text": "여러 계정에 접속을 시도한 곳에서 로그인 요청이 있었어요",
+        "contrib": 25
+      },
+      {
+        "text": "평소보다 큰 금액이었어요",
+        "contrib": 22.0
+      },
+      {
+        "text": "로그인 직후 연락처가 변경되었어요",
+        "contrib": 20
+      },
+      {
+        "text": "평소 쓰지 않던 기기에서 접속했어요",
+        "contrib": 15
+      }
+    ],
+    "action": "차단 + 계정 잠금"
+  },
+  "U0067": {
+    "user_id": "U0067",
+    "total_score": 99,
+    "score_breakdown": {
+      "takeover_part": 60.0,
+      "payment_part": 39.4,
+      "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
+    },
+    "payment_risk": 0.984,
     "level": "매우 위험",
     "exposure_score": 0,
     "takeover_score": 100,
@@ -41,32 +83,36 @@
     ],
     "action": "차단 + 계정 잠금"
   },
-  "U0043": {
-    "user_id": "U0043",
-    "total_score": 85,
+  "U0082": {
+    "user_id": "U0082",
+    "total_score": 97,
     "score_breakdown": {
-      "takeover_part": 45.0,
-      "payment_part": 40.0,
+      "takeover_part": 60.0,
+      "payment_part": 37.4,
       "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
     },
-    "payment_risk": 1.0,
+    "payment_risk": 0.934,
     "level": "매우 위험",
     "exposure_score": 0,
-    "takeover_score": 75,
+    "takeover_score": 100,
     "target": {
-      "time": "05:55",
+      "time": "08:53",
       "merchant": "해외결제",
-      "amount": 233900,
-      "channel": "해외결제"
+      "amount": 100500,
+      "channel": "체크카드"
     },
     "reasons": [
+      {
+        "text": "여러 계정에 접속을 시도한 곳에서 로그인 요청이 있었어요",
+        "contrib": 25
+      },
       {
         "text": "평소 접속하지 않던 지역에서 로그인되었어요",
         "contrib": 25
       },
       {
         "text": "평소보다 큰 금액이었어요",
-        "contrib": 23.8
+        "contrib": 22.6
       },
       {
         "text": "로그인 직후 연락처가 변경되었어요",
@@ -74,51 +120,9 @@
       },
       {
         "text": "평소 쓰지 않던 기기에서 접속했어요",
-        "contrib": 15
-      },
-      {
-        "text": "로그인 실패가 반복된 뒤 성공했어요",
         "contrib": 15
       }
     ],
     "action": "차단 + 계정 잠금"
-  },
-  "U0340": {
-    "user_id": "U0340",
-    "total_score": 76,
-    "score_breakdown": {
-      "takeover_part": 36.0,
-      "payment_part": 40.0,
-      "formula": "종합 = 0.6×계정장악 + 40×결제위험확률 (노출 정황은 임계값을 낮추는 데 쓰임)"
-    },
-    "payment_risk": 1.0,
-    "level": "위험",
-    "exposure_score": 0,
-    "takeover_score": 60,
-    "target": {
-      "time": "00:14",
-      "merchant": "해외결제",
-      "amount": 206700,
-      "channel": "신용카드"
-    },
-    "reasons": [
-      {
-        "text": "평소 접속하지 않던 지역에서 로그인되었어요",
-        "contrib": 25
-      },
-      {
-        "text": "평소보다 큰 금액이었어요",
-        "contrib": 21.8
-      },
-      {
-        "text": "로그인 직후 연락처가 변경되었어요",
-        "contrib": 20
-      },
-      {
-        "text": "평소 쓰지 않던 기기에서 접속했어요",
-        "contrib": 15
-      }
-    ],
-    "action": "추가 인증"
   }
 }

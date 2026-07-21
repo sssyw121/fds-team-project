@@ -559,10 +559,10 @@ body {
     <div class="target">
       <div class="icon" style="background:#00704A;">스</div>
       <div class="body">
-        <div class="t1">05:24 · 해외결제</div>
+        <div class="t1">00:54 · 해외결제</div>
         <div class="t2">해외결제 결제 시도</div>
       </div>
-      <div class="amt">239,700원</div>
+      <div class="amt">120,300원</div>
     </div>
 
     <!-- 위험 점수 -->
@@ -570,7 +570,7 @@ body {
       <div>
         <div class="label">종합 위험 점수</div>
         <div style="height:4px;"></div>
-        <div class="value mono-num">100<span class="max">/100</span></div>
+        <div class="value mono-num">85<span class="max">/100</span></div>
       </div>
       <div class="verdict">매우 위험</div>
     </div>
@@ -583,6 +583,18 @@ body {
 
       <div class="factor">
         <div class="factor-row">
+          <div class="factor-emoji">🕳️</div>
+          <div class="factor-body">
+            <div class="factor-title">외부에 유출된 정보와 일치하는 항목이 있어요</div>
+            <div class="factor-desc">외부 유출 정보와 일치</div>
+          </div>
+          <div class="factor-impact high mono-num">+40</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:100%;"></div></div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
           <div class="factor-emoji">🌐</div>
           <div class="factor-body">
             <div class="factor-title">여러 계정에 접속을 시도한 곳에서 로그인 요청이 있었어요</div>
@@ -590,19 +602,19 @@ body {
           </div>
           <div class="factor-impact high mono-num">+25</div>
         </div>
-        <div class="factor-bar"><div class="fill" style="width:100%;"></div></div>
+        <div class="factor-bar"><div class="fill" style="width:62%;"></div></div>
       </div>
 
       <div class="factor">
         <div class="factor-row">
-          <div class="factor-emoji">🌏</div>
+          <div class="factor-emoji">💸</div>
           <div class="factor-body">
-            <div class="factor-title">평소 접속하지 않던 지역에서 로그인되었어요</div>
-            <div class="factor-desc">최근 이 계정은 국내에서만 접속</div>
+            <div class="factor-title">평소보다 큰 금액이었어요</div>
+            <div class="factor-desc">평소 결제 금액 대비 이탈</div>
           </div>
-          <div class="factor-impact high mono-num">+25</div>
+          <div class="factor-impact high mono-num">+22</div>
         </div>
-        <div class="factor-bar"><div class="fill" style="width:100%;"></div></div>
+        <div class="factor-bar"><div class="fill" style="width:55%;"></div></div>
       </div>
 
       <div class="factor">
@@ -614,19 +626,7 @@ body {
           </div>
           <div class="factor-impact high mono-num">+20</div>
         </div>
-        <div class="factor-bar"><div class="fill" style="width:80%;"></div></div>
-      </div>
-
-      <div class="factor">
-        <div class="factor-row">
-          <div class="factor-emoji">💸</div>
-          <div class="factor-body">
-            <div class="factor-title">평소보다 큰 금액이었어요</div>
-            <div class="factor-desc">평소 결제 금액 대비 이탈</div>
-          </div>
-          <div class="factor-impact mid mono-num">+18.6</div>
-        </div>
-        <div class="factor-bar"><div class="fill" style="width:74%;"></div></div>
+        <div class="factor-bar"><div class="fill" style="width:50%;"></div></div>
       </div>
 
       <div class="factor">
@@ -638,7 +638,7 @@ body {
           </div>
           <div class="factor-impact mid mono-num">+15</div>
         </div>
-        <div class="factor-bar"><div class="fill" style="width:60%;"></div></div>
+        <div class="factor-bar"><div class="fill" style="width:38%;"></div></div>
       </div>
 
       <div class="factors-note">
@@ -665,11 +665,11 @@ body {
             font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
   <b>LIVE</b> · 이 화면의 숫자는 <code>FDS_통합_스코어링.ipynb</code>가 계산한
   <code>screen_payload.json</code>에서 주입되었습니다.<br>
-  계정 <b>U0067</b> → 조치 <b>차단 + 계정 잠금</b><br>
-  <span style="opacity:.85">종합 <b>100</b>
-  = 0.6×계정장악 100(60)
-  + 40×결제위험 1.0(40)
-  · 노출 정황 0점은 임계값을 낮추는 데 사용</span>
+  계정 <b>U0055</b> → 조치 <b>차단 + 계정 잠금</b><br>
+  <span style="opacity:.85">종합 <b>85</b>
+  = 0.6×계정장악 75(45)
+  + 40×결제위험 0.991(39.6)
+  · 노출 정황 40점은 임계값을 낮추는 데 사용</span>
 </div>
 
 <div style="position:fixed;right:12px;bottom:12px;z-index:9999;

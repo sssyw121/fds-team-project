@@ -559,10 +559,10 @@ body {
     <div class="target">
       <div class="icon">배</div>
       <div class="body">
-        <div class="t1">00:14 · 해외결제</div>
+        <div class="t1">08:53 · 해외결제</div>
         <div class="t2">해외결제 결제 시도</div>
       </div>
-      <div class="amt">206,700원</div>
+      <div class="amt">100,500원</div>
     </div>
 
     <!-- 위험 점수 -->
@@ -570,15 +570,27 @@ body {
       <div>
         <div class="label">종합 위험 점수</div>
         <div style="height:4px;"></div>
-        <div class="value mono-num">76<span class="max">/100</span></div>
+        <div class="value mono-num">97<span class="max">/100</span></div>
       </div>
-      <div class="verdict">위험</div>
+      <div class="verdict">매우 위험</div>
     </div>
 
     <div class="factors">
       <div class="factors-head">
-        <div class="factors-title">판단에 쓰인 네 가지 근거</div>
+        <div class="factors-title">판단에 쓰인 다섯 가지 근거</div>
         <div class="factors-sub">기여도 순</div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">🌐</div>
+          <div class="factor-body">
+            <div class="factor-title">여러 계정에 접속을 시도한 곳에서 로그인 요청이 있었어요</div>
+            <div class="factor-desc">같은 접속처에서 다수 계정에 로그인 시도가 관측됨</div>
+          </div>
+          <div class="factor-impact high mono-num">+25</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:100%;"></div></div>
       </div>
 
       <div class="factor">
@@ -600,9 +612,9 @@ body {
             <div class="factor-title">평소보다 큰 금액이었어요</div>
             <div class="factor-desc">평소 결제 금액 대비 이탈</div>
           </div>
-          <div class="factor-impact high mono-num">+21.8</div>
+          <div class="factor-impact high mono-num">+22.6</div>
         </div>
-        <div class="factor-bar"><div class="fill" style="width:87%;"></div></div>
+        <div class="factor-bar"><div class="fill" style="width:90%;"></div></div>
       </div>
 
       <div class="factor">
@@ -630,7 +642,7 @@ body {
       </div>
 
       <div class="factors-note">
-        <strong>네 가지 근거가 모두 겹친 순간에만 이런 점수가 나와요.</strong>
+        <strong>다섯 가지 근거가 모두 겹친 순간에만 이런 점수가 나와요.</strong>
         각 근거 하나만으로는 위험하다고 판단하지 않아요. 조합됐을 때만 이례적인 패턴이 되기 때문이에요.
       </div>
     </div>
@@ -653,10 +665,10 @@ body {
             font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
   <b>LIVE</b> · 이 화면의 숫자는 <code>FDS_통합_스코어링.ipynb</code>가 계산한
   <code>screen_payload.json</code>에서 주입되었습니다.<br>
-  계정 <b>U0340</b> → 조치 <b>추가 인증</b><br>
-  <span style="opacity:.85">종합 <b>76</b>
-  = 0.6×계정장악 60(36)
-  + 40×결제위험 1.0(40)
+  계정 <b>U0082</b> → 조치 <b>차단 + 계정 잠금</b><br>
+  <span style="opacity:.85">종합 <b>97</b>
+  = 0.6×계정장악 100(60)
+  + 40×결제위험 0.934(37.4)
   · 노출 정황 0점은 임계값을 낮추는 데 사용</span>
 </div>
 </body>
