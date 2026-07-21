@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카카오페이 - 홈 (위험 감지)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ============================================
+   FDS 프로토타입 공통 스타일
+   카카오페이 톤 (흰 배경 + 검정 + 옐로우 CTA)
+   ============================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Colors */
+  --kakao-yellow: #FEE500;
+  --kakao-yellow-dark: #FADA0A;
+  --text-primary: #191919;
+  --text-secondary: #767676;
+  --text-tertiary: #A0A0A0;
+  --bg-white: #FFFFFF;
+  --bg-section: #F7F8FA;
+  --bg-card: #F5F6F8;
+  --border: #EEEEEE;
+  --border-strong: #E0E0E0;
+
+  --danger: #FF3B30;
+  --danger-bg: #FFF1F0;
+  --warning: #FF9500;
+  --warning-bg: #FFF7EB;
+  --safe: #00A661;
+  --safe-bg: #E7F7EF;
+  --info: #3182F6;
+  --info-bg: #EEF5FF;
+
+  /* Typography scale */
+  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 모바일 프레임 ============ */
+.device {
+  width: 375px;
+  height: 812px;
+  background: var(--bg-white);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 10px solid #1a1a1a;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-white);
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ============ 상태바 ============ */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.status-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.status-bar .signal::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 10px;
+  background:
+    linear-gradient(to top, var(--text-primary) 30%, transparent 30%) 0 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 50%, transparent 50%) 4px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 75%, transparent 75%) 8px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 100%, transparent 100%) 12px 0/3px 100% no-repeat;
+}
+
+.status-bar .battery {
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid var(--text-primary);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+
+.status-bar .battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 2px;
+  height: 4px;
+  background: var(--text-primary);
+  border-radius: 0 1px 1px 0;
+}
+
+.status-bar .battery-fill {
+  height: 100%;
+  width: 75%;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+
+/* ============ 앱 헤더 ============ */
+.app-header {
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.app-header .back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.app-header .actions {
+  display: flex;
+  gap: 16px;
+}
+
+.app-header .actions button {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============ 콘텐츠 ============ */
+.content {
+  padding: 20px 20px 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.subtle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============ 카드 ============ */
+.card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.card.flat {
+  background: var(--bg-card);
+  border: none;
+}
+
+/* ============ CTA 버튼 ============ */
+.cta-fixed {
+  padding: 12px 20px 24px;
+  background: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: transform 0.05s ease;
+  letter-spacing: -0.2px;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary {
+  background: var(--kakao-yellow);
+  color: var(--text-primary);
+}
+
+.btn.secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 8px;
+}
+
+.btn.danger {
+  background: var(--text-primary);
+  color: var(--bg-white);
+}
+
+/* ============ 뱃지 ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.warning { background: var(--warning-bg); color: var(--warning); }
+.badge.safe { background: var(--safe-bg); color: var(--safe); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--bg-card); color: var(--text-secondary); }
+
+/* ============ 서비스 아이콘 (연동 서비스용) ============ */
+.svc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ============ 유틸 ============ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stack { display: flex; flex-direction: column; gap: 4px; }
+
+.divider {
+  height: 8px;
+  background: var(--bg-section);
+  margin: 0 -20px;
+}
+
+.mono-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+/* ============ 페이지 라벨 (튜토리얼 안내용) ============ */
+.page-label {
+  position: absolute;
+  top: -32px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+}
+
+</style>
+<style>
+  /* index.html 스타일 상속하되 알림 배너 추가 */
+  .home-header {
+    padding: 8px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-white);
+  }
+  .kp-logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
+  .kp-logo .dot {
+    width: 22px; height: 22px; background: var(--kakao-yellow); border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: var(--text-primary);
+  }
+  .icon-btn { background: none; border: none; cursor: pointer; width: 32px; height: 32px; color: var(--text-primary); }
+  .header-actions { display: flex; gap: 8px; }
+
+  /* 알림 배너 - 핵심 */
+  .alert-banner {
+    margin: 8px 20px 0;
+    background: var(--text-primary);
+    color: white;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    border: none;
+    width: calc(100% - 40px);
+    font-family: var(--font);
+    text-align: left;
+  }
+  .alert-banner .a-icon {
+    width: 40px; height: 40px;
+    background: var(--danger);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .alert-banner .a-body { flex: 1; min-width: 0; }
+  .alert-banner .a-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .alert-banner .a-desc {
+    font-size: 12px;
+    opacity: 0.75;
+    line-height: 1.4;
+  }
+  .alert-banner .a-arrow {
+    font-size: 20px;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+  .alert-banner .pulse {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--danger);
+    border-radius: 50%;
+    margin-right: 4px;
+    animation: pulse 1.5s infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  /* 자산 카드 (블러 처리) */
+  .asset {
+    padding: 20px;
+    background: var(--bg-white);
+  }
+  .asset-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+  .asset-amount {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    filter: blur(6px);
+    user-select: none;
+  }
+  .asset-amount .unit { font-size: 22px; font-weight: 700; }
+  .asset-actions { display: flex; gap: 8px; }
+  .asset-actions .mini-btn {
+    padding: 10px 16px; background: var(--bg-card); border: none;
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    color: var(--text-tertiary); cursor: not-allowed; font-family: var(--font);
+  }
+  .asset-locked-note {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* 결제 큰 CTA (비활성) */
+  .pay-cta {
+    margin: 8px 20px 20px;
+    padding: 18px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: not-allowed;
+    border: none;
+    width: calc(100% - 40px);
+    font-family: var(--font);
+  }
+  .pay-cta .l { text-align: left; }
+  .pay-cta .l .t1 { font-size: 12px; margin-bottom: 2px; }
+  .pay-cta .l .t2 { font-size: 15px; font-weight: 700; }
+  .pay-cta .lock { font-size: 16px; }
+
+  /* 하단 탭바 */
+  .tabbar {
+    background: var(--bg-white); border-top: 1px solid var(--border);
+    padding: 8px 0 24px; display: flex; justify-content: space-around;
+    flex-shrink: 0;
+  }
+  .tab {
+    background: none; border: none; display: flex; flex-direction: column;
+    align-items: center; gap: 3px; padding: 6px 4px; cursor: pointer;
+    font-family: var(--font); color: var(--text-tertiary);
+  }
+  .tab.active { color: var(--text-primary); }
+  .tab .t-icon { font-size: 20px; }
+  .tab .t-label { font-size: 10px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">2. 결제 접속 (기능 4 발동 직후)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- 앱 헤더 -->
+    <div class="home-header">
+      <div class="kp-logo"><span class="dot">P</span><span>pay</span></div>
+      <div class="header-actions">
+        <button class="icon-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button class="icon-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 1112 0c0 5 2 7 2 7H4s2-2 2-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19a2 2 0 004 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+
+    <!-- 핵심: 알림 배너 -->
+    <button class="alert-banner" onclick="location.href='notify.html'">
+      <div class="a-icon">🛡️</div>
+      <div class="a-body">
+        <div class="a-title"><span class="pulse"></span>낯선 접속이 감지되었어요</div>
+        <div class="a-desc">지난밤 3건의 결제 시도를 막았어요. 합계 680,300원이에요.<br>연결된 서비스를 지금 확인해주세요.</div>
+      </div>
+      <div class="a-arrow">›</div>
+    </button>
+
+    <!-- 자산 (블러 처리) -->
+    <div class="asset">
+      <div class="asset-label">머니</div>
+      <div class="asset-amount mono-num">1,234,567<span class="unit">원</span></div>
+      <div class="asset-actions">
+        <button class="mini-btn">충전</button>
+        <button class="mini-btn">송금</button>
+        <button class="mini-btn">더보기</button>
+      </div>
+      <div class="asset-locked-note">
+        🔒 안전 확인 후 다시 이용할 수 있어요
+      </div>
+    </div>
+
+    <!-- 결제 (비활성) -->
+    <button class="pay-cta">
+      <div class="l">
+        <div class="t1">간편결제</div>
+        <div class="t2">일시 보호 중</div>
+      </div>
+      <div class="lock">🔒</div>
+    </button>
+
+    </div><!-- /scroll-area -->
+
+    <!-- 하단 탭바 -->
+    <div class="tabbar">
+      <button class="tab active"><span class="t-icon">🏠</span><span class="t-label">홈</span></button>
+      <button class="tab"><span class="t-icon">💳</span><span class="t-label">결제</span></button>
+      <button class="tab"><span class="t-icon">💰</span><span class="t-label">자산</span></button>
+      <button class="tab"><span class="t-icon">🎁</span><span class="t-label">혜택</span></button>
+      <button class="tab"><span class="t-icon">☰</span><span class="t-label">전체</span></button>
+    </div>
+
+  </div>
+</div>
+
+
+<div style="position:fixed;left:12px;bottom:12px;z-index:9999;max-width:340px;
+            padding:10px 12px;border-radius:10px;background:rgba(238,246,255,.97);
+            border:1px solid #CFE4FF;font-size:11px;color:#1B5FAA;line-height:1.5;
+            font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+  <b>LIVE</b> · 이 화면의 숫자는 <code>FDS_통합_스코어링.ipynb</code>가 계산한
+  <code>screen_payload.json</code>에서 주입되었습니다.<br>
+  계정 <b>U0067</b> · 노출 정황 0점 ·
+  계정 장악 100점 → 조치 <b>차단 + 계정 잠금</b><br>차단 3건 · 합계 680,300원
+</div>
+
+<div style="position:fixed;right:12px;bottom:12px;z-index:9999;
+            padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.97);
+            border:1px solid #E3E5E8;box-shadow:0 4px 16px rgba(0,0,0,.12);
+            font-family:-apple-system,sans-serif;display:flex;align-items:center;gap:8px">
+  <div style="font-size:11px;color:#666;line-height:1.35;text-align:right">
+    <b style="color:#111">2 / 11</b><br>위험 감지 · 기능④ 전파
+  </div>
+  <a href="index.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#fff;color:#333;border:1px solid #ddd">‹ 이전</a><a href="notify.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#111;color:#fff">다음 ›</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>유지 확인</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ============================================
+   FDS 프로토타입 공통 스타일
+   카카오페이 톤 (흰 배경 + 검정 + 옐로우 CTA)
+   ============================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Colors */
+  --kakao-yellow: #FEE500;
+  --kakao-yellow-dark: #FADA0A;
+  --text-primary: #191919;
+  --text-secondary: #767676;
+  --text-tertiary: #A0A0A0;
+  --bg-white: #FFFFFF;
+  --bg-section: #F7F8FA;
+  --bg-card: #F5F6F8;
+  --border: #EEEEEE;
+  --border-strong: #E0E0E0;
+
+  --danger: #FF3B30;
+  --danger-bg: #FFF1F0;
+  --warning: #FF9500;
+  --warning-bg: #FFF7EB;
+  --safe: #00A661;
+  --safe-bg: #E7F7EF;
+  --info: #3182F6;
+  --info-bg: #EEF5FF;
+
+  /* Typography scale */
+  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 모바일 프레임 ============ */
+.device {
+  width: 375px;
+  height: 812px;
+  background: var(--bg-white);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 10px solid #1a1a1a;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-white);
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ============ 상태바 ============ */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.status-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.status-bar .signal::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 10px;
+  background:
+    linear-gradient(to top, var(--text-primary) 30%, transparent 30%) 0 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 50%, transparent 50%) 4px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 75%, transparent 75%) 8px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 100%, transparent 100%) 12px 0/3px 100% no-repeat;
+}
+
+.status-bar .battery {
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid var(--text-primary);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+
+.status-bar .battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 2px;
+  height: 4px;
+  background: var(--text-primary);
+  border-radius: 0 1px 1px 0;
+}
+
+.status-bar .battery-fill {
+  height: 100%;
+  width: 75%;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+
+/* ============ 앱 헤더 ============ */
+.app-header {
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.app-header .back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.app-header .actions {
+  display: flex;
+  gap: 16px;
+}
+
+.app-header .actions button {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============ 콘텐츠 ============ */
+.content {
+  padding: 20px 20px 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.subtle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============ 카드 ============ */
+.card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.card.flat {
+  background: var(--bg-card);
+  border: none;
+}
+
+/* ============ CTA 버튼 ============ */
+.cta-fixed {
+  padding: 12px 20px 24px;
+  background: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: transform 0.05s ease;
+  letter-spacing: -0.2px;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary {
+  background: var(--kakao-yellow);
+  color: var(--text-primary);
+}
+
+.btn.secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 8px;
+}
+
+.btn.danger {
+  background: var(--text-primary);
+  color: var(--bg-white);
+}
+
+/* ============ 뱃지 ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.warning { background: var(--warning-bg); color: var(--warning); }
+.badge.safe { background: var(--safe-bg); color: var(--safe); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--bg-card); color: var(--text-secondary); }
+
+/* ============ 서비스 아이콘 (연동 서비스용) ============ */
+.svc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ============ 유틸 ============ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stack { display: flex; flex-direction: column; gap: 4px; }
+
+.divider {
+  height: 8px;
+  background: var(--bg-section);
+  margin: 0 -20px;
+}
+
+.mono-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+/* ============ 페이지 라벨 (튜토리얼 안내용) ============ */
+.page-label {
+  position: absolute;
+  top: -32px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+}
+
+</style>
+<style>
+  .keep-hero {
+    padding: 20px 20px 8px;
+  }
+  .keep-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .keep-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .keep-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* 유지 대상 서비스 */
+  .keep-target {
+    margin: 16px 20px 20px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .keep-target-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .keep-target-icon {
+    width: 40px; height: 40px;
+    background: #FF3B30;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+  }
+  .keep-target-info { flex: 1; }
+  .keep-target-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .keep-target-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .keep-detail {
+    background: white;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .keep-detail .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+  }
+  .keep-detail .k { color: var(--text-secondary); }
+  .keep-detail .v {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 안전망 카드 */
+  .safety-net {
+    margin: 8px 20px 12px;
+    padding: 18px;
+    background: var(--info-bg);
+    border-radius: 16px;
+  }
+  .safety-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--info);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .safety-desc {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .safety-desc strong { font-weight: 700; }
+
+  /* 알림 채널 리스트 */
+  .channels {
+    background: white;
+    border-radius: 12px;
+    padding: 4px 12px;
+  }
+  .channel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .channel:last-child { border-bottom: none; }
+  .channel-icon {
+    width: 28px; height: 28px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .channel-body { flex: 1; min-width: 0; }
+  .channel-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 1px;
+  }
+  .channel-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .channel-check {
+    color: var(--safe);
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  /* 언제 다시 감지되나 */
+  .when-alert {
+    margin: 4px 20px 20px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 12px;
+  }
+  .when-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .when-list {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    padding-left: 4px;
+  }
+  .when-list li {
+    list-style: none;
+    padding-left: 16px;
+    position: relative;
+  }
+  .when-list li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    color: var(--text-tertiary);
+    font-weight: 800;
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">A. 유지 확인 (안전망 명시)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <button class="back" onclick="location.href='linked-accounts.html'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="title">유지 확인</div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <!-- Hero -->
+    <div class="keep-hero">
+      <div class="keep-eyebrow">지현님의 결정</div>
+      <div class="keep-title">
+        이 서비스는 그대로<br>두시는 건가요?
+      </div>
+      <div class="keep-desc">
+        본인이 시도한 결제였을 수도 있으니,<br>
+        결정을 존중할게요. 대신 계속 지켜볼게요.
+      </div>
+    </div>
+
+    <!-- 유지 대상 -->
+    <div class="keep-target">
+      <div class="keep-target-head">
+        <div class="keep-target-icon" style="background:#4B7BEC;">쿠</div>
+        <div class="keep-target-info">
+          <div class="keep-target-name">쿠팡</div>
+          <div class="keep-target-meta">이 연결을 유지합니다</div>
+        </div>
+      </div>
+      <div class="keep-detail">
+        <div class="row"><span class="k">차단됐던 시도</span><span class="v">03:28</span></div>
+        <div class="row"><span class="k">금액</span><span class="v">100,000원</span></div>
+        <div class="row"><span class="k">품목</span><span class="v">쿠팡 상품권</span></div>
+      </div>
+    </div>
+
+    <!-- 안전망 -->
+    <div class="safety-net">
+      <div class="safety-title">
+        🛡️ 지현님이 유지를 선택해도, 저희는 계속 감시해요
+      </div>
+      <div class="safety-desc">
+        만약 지금 이 시도가 실제로 탈취범이었다면,<br>
+        곧 <strong>다른 흔적</strong>이 남을 거예요. 그때 저희가 다시 알려드릴게요.
+      </div>
+
+      <div class="channels">
+        <div class="channel">
+          <div class="channel-icon">✉️</div>
+          <div class="channel-body">
+            <div class="channel-label">원래 등록된 이메일</div>
+            <div class="channel-value">hyun****@naver.com</div>
+          </div>
+          <span class="channel-check">✓</span>
+        </div>
+        <div class="channel">
+          <div class="channel-icon">📱</div>
+          <div class="channel-body">
+            <div class="channel-label">원래 등록된 전화번호</div>
+            <div class="channel-value">010-****-1234</div>
+          </div>
+          <span class="channel-check">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 언제 다시 감지 -->
+    <div class="when-alert">
+      <div class="when-title">
+        📡 이런 신호가 감지되면 다시 알려드릴게요
+      </div>
+      <ul class="when-list">
+        <li>비밀번호가 갑자기 변경됨</li>
+        <li>새 기기에서 결제 시도</li>
+        <li>다른 연결 서비스에서 이상 결제</li>
+        <li>계정 정보(이메일·연락처)가 다시 바뀜</li>
+      </ul>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="location.href='linked-accounts.html'">
+        네, 유지할게요
+      </button>
+      <button class="btn ghost" onclick="location.href='protect-action.html'">
+        역시 해제하고 조치할래요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

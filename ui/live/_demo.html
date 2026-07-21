@@ -1,0 +1,41 @@
+<!doctype html><meta charset="utf-8">
+<title>FDS 데모 — 화면 × 파이프라인</title>
+<style>body{font-family:-apple-system,sans-serif;max-width:720px;margin:40px auto;padding:0 20px;line-height:1.7}
+a{color:#0A66C2} code{background:#f4f4f5;padding:2px 5px;border-radius:4px}
+table{border-collapse:collapse;width:100%} td,th{border-bottom:1px solid #eee;padding:7px 4px;text-align:left;font-size:14px}
+.hero{background:#111;color:#fff;padding:20px;border-radius:14px;margin-bottom:24px}</style>
+<div class="hero"><h1 style="margin:0 0 6px">FDS 데모 — 화면 × 파이프라인 연동</h1>
+<div style="opacity:.75;font-size:14px">디자인은 팀원 원본 그대로, 숫자만 계산 결과로 주입했습니다.</div></div>
+<div style="background:#F7F8FA;border-radius:12px;padding:16px 18px;margin-bottom:22px">
+<b>데모 순서</b> — <a href="index.html">index.html</a> 에서 시작해 클릭으로 진행됩니다.
+<pre style="margin:12px 0 0;font-size:13px;line-height:1.65;white-space:pre-wrap">index → home-alert → notify → linked-accounts
+                                    │
+        ┌───────────────────────────┴───────────────────────────┐
+   <b>[분기 ①] 조치함</b>                                 <b>[분기 ②] 유지한다</b> ⭐
+   shap-starbucks  왜 위험한지                       keep-starbucks   (A) 유지 선택
+        ↓                                                ↓
+   protect-action  3단계 보호조치                    retry-lock      (B) 12분 뒤 재알림
+                                                         ↓
+                                                    re-detected     (C) 실제 탈취였음
+                                                         ↓
+                                                    account-locked  (D) 계정 잠금 완료</pre>
+<p style="margin:12px 0 0;font-size:13px"><b>분기 ②를 추천합니다.</b> 사용자가 "내가 맞다"고 응답했는데도
+시스템이 감시를 유지해 결국 잡아내는 흐름이라, <code>its_me</code> 응답을 무조건 신뢰하면 안 된다는
+설계 판단(이벤트 로그 스키마 v2)이 화면으로 드러납니다.</p>
+</div>
+<table><tr><th>화면</th><th>데이터</th></tr><tr><td><a href="account-locked.html">account-locked.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="home-alert.html">home-alert.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="index.html">index.html</a></td><td>—</td></tr>
+<tr><td><a href="keep-confirm.html">keep-confirm.html</a></td><td>—</td></tr>
+<tr><td><a href="keep-coupang.html">keep-coupang.html</a></td><td>—</td></tr>
+<tr><td><a href="keep-starbucks.html">keep-starbucks.html</a></td><td>—</td></tr>
+<tr><td><a href="linked-accounts.html">linked-accounts.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="notify.html">notify.html</a></td><td>—</td></tr>
+<tr><td><a href="protect-action.html">protect-action.html</a></td><td>—</td></tr>
+<tr><td><a href="re-detected.html">re-detected.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="retry-lock.html">retry-lock.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="shap-coupang.html">shap-coupang.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="shap-explain.html">shap-explain.html</a></td><td>✅ 실데이터</td></tr>
+<tr><td><a href="shap-starbucks.html">shap-starbucks.html</a></td><td>✅ 실데이터</td></tr></table>
+<p style="color:#666;font-size:13px;margin-top:24px">⚠️ 로그인·계정변경 데이터는 합성입니다
+(<code>code/DATA_CARD.md</code>). 결제 데이터는 수업 실습 제공분입니다.</p>

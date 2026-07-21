@@ -216,3 +216,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 대용량 데이터셋 (GitHub 100MB 제한 초과)
+*.csv
+!*_sample_small.csv
+.DS_Store
+
+# 수업 실습 데이터 + FDS 데모용 합성 데이터 (작고 재현에 필요하므로 커밋)
+!code/transactions.csv
+!code/login_events.csv
+!code/account_change_events.csv
+
+# 데모 산출물 CSV (작고 대시보드 입력에 필요)
+!outputs/*.csv
+
+# 팀원 브랜치(prd/songyewon)의 화면 원본 — 로컬 작업 사본이라 커밋하지 않는다.
+# 데모는 ui/live/ 만으로 완결된다(CSS 인라인).
+ui/*.html
+ui/shared.css
+
+# 수업 실습 노트북 (강사 자료) — 우리 노트북에 어떤 패턴을 따랐는지 명시돼 있다
+code/*.ipynb
+
+# 문서 백업
+*.backup_v*

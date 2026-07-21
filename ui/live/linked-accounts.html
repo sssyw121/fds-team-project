@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>연결된 서비스 관리</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ============================================
+   FDS 프로토타입 공통 스타일
+   카카오페이 톤 (흰 배경 + 검정 + 옐로우 CTA)
+   ============================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Colors */
+  --kakao-yellow: #FEE500;
+  --kakao-yellow-dark: #FADA0A;
+  --text-primary: #191919;
+  --text-secondary: #767676;
+  --text-tertiary: #A0A0A0;
+  --bg-white: #FFFFFF;
+  --bg-section: #F7F8FA;
+  --bg-card: #F5F6F8;
+  --border: #EEEEEE;
+  --border-strong: #E0E0E0;
+
+  --danger: #FF3B30;
+  --danger-bg: #FFF1F0;
+  --warning: #FF9500;
+  --warning-bg: #FFF7EB;
+  --safe: #00A661;
+  --safe-bg: #E7F7EF;
+  --info: #3182F6;
+  --info-bg: #EEF5FF;
+
+  /* Typography scale */
+  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 모바일 프레임 ============ */
+.device {
+  width: 375px;
+  height: 812px;
+  background: var(--bg-white);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 10px solid #1a1a1a;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-white);
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ============ 상태바 ============ */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.status-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.status-bar .signal::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 10px;
+  background:
+    linear-gradient(to top, var(--text-primary) 30%, transparent 30%) 0 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 50%, transparent 50%) 4px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 75%, transparent 75%) 8px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 100%, transparent 100%) 12px 0/3px 100% no-repeat;
+}
+
+.status-bar .battery {
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid var(--text-primary);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+
+.status-bar .battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 2px;
+  height: 4px;
+  background: var(--text-primary);
+  border-radius: 0 1px 1px 0;
+}
+
+.status-bar .battery-fill {
+  height: 100%;
+  width: 75%;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+
+/* ============ 앱 헤더 ============ */
+.app-header {
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.app-header .back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.app-header .actions {
+  display: flex;
+  gap: 16px;
+}
+
+.app-header .actions button {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============ 콘텐츠 ============ */
+.content {
+  padding: 20px 20px 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.subtle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============ 카드 ============ */
+.card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.card.flat {
+  background: var(--bg-card);
+  border: none;
+}
+
+/* ============ CTA 버튼 ============ */
+.cta-fixed {
+  padding: 12px 20px 24px;
+  background: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: transform 0.05s ease;
+  letter-spacing: -0.2px;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary {
+  background: var(--kakao-yellow);
+  color: var(--text-primary);
+}
+
+.btn.secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 8px;
+}
+
+.btn.danger {
+  background: var(--text-primary);
+  color: var(--bg-white);
+}
+
+/* ============ 뱃지 ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.warning { background: var(--warning-bg); color: var(--warning); }
+.badge.safe { background: var(--safe-bg); color: var(--safe); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--bg-card); color: var(--text-secondary); }
+
+/* ============ 서비스 아이콘 (연동 서비스용) ============ */
+.svc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ============ 유틸 ============ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stack { display: flex; flex-direction: column; gap: 4px; }
+
+.divider {
+  height: 8px;
+  background: var(--bg-section);
+  margin: 0 -20px;
+}
+
+.mono-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+/* ============ 페이지 라벨 (튜토리얼 안내용) ============ */
+.page-label {
+  position: absolute;
+  top: -32px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+}
+
+</style>
+<style>
+  .intro {
+    padding: 16px 20px 12px;
+  }
+  .intro-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .intro-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* 요약 통계 */
+  .summary {
+    margin: 8px 20px 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .stat {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .stat.danger { background: var(--danger-bg); }
+  .stat.warning { background: var(--warning-bg); }
+  .stat .num {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 2px;
+  }
+  .stat.danger .num { color: var(--danger); }
+  .stat.warning .num { color: var(--warning); }
+  .stat.default .num { color: var(--text-primary); }
+  .stat .label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .stat.danger .label { color: var(--danger); opacity: 0.85; }
+  .stat.warning .label { color: var(--warning); opacity: 0.85; }
+
+  /* 필터 칩 */
+  .filters {
+    padding: 0 20px 12px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip {
+    padding: 8px 14px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--font);
+  }
+  .chip.active {
+    background: var(--text-primary);
+    color: white;
+    border-color: var(--text-primary);
+  }
+
+  /* 서비스 카드 */
+  .svc-list {
+    padding: 0 20px 100px;
+  }
+  .svc-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 12px 4px 8px;
+  }
+
+  .svc-card {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+  .svc-card.risky {
+    border-color: var(--danger);
+    background: var(--danger-bg);
+  }
+  .svc-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .svc-info { flex: 1; min-width: 0; }
+  .svc-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .svc-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .svc-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .attempt-detail {
+    background: rgba(0,0,0,0.03);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+  }
+  .svc-card.risky .attempt-detail {
+    background: rgba(255,255,255,0.7);
+  }
+  .attempt-detail .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+  }
+  .attempt-detail .k { color: var(--text-secondary); }
+  .attempt-detail .v {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .svc-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .svc-actions .a-btn {
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+  .a-btn.disconnect {
+    background: var(--text-primary);
+    color: white;
+  }
+  .a-btn.keep {
+    background: var(--bg-white);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-strong);
+  }
+  .a-btn.why {
+    background: none;
+    color: var(--info);
+    font-size: 11px;
+    text-align: left;
+    padding: 6px 0 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+
+  /* 안전 서비스 (접힘) */
+  .svc-safe {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">4. 위험 노출 / 비노출 연동 계정 관리</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <button class="back" onclick="location.href='notify.html'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="title">연결된 서비스</div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <div class="intro">
+      <div class="intro-title">지현님의 카카오 계정에 연결된 곳</div>
+      <div class="intro-desc">각 서비스별로 개별 조치하거나, 아래에서 한 번에 처리할 수 있어요.</div>
+    </div>
+
+    <!-- 요약 통계 -->
+    <div class="summary">
+      <div class="stat danger">
+        <div class="num">3</div>
+        <div class="label">시도 있음</div>
+      </div>
+      <div class="stat warning">
+        <div class="num">5</div>
+        <div class="label">결제수단 있음</div>
+      </div>
+      <div class="stat default">
+        <div class="num">12</div>
+        <div class="label">전체 연결</div>
+      </div>
+    </div>
+
+    <!-- 필터 -->
+    <div class="filters">
+      <button class="chip active">전체 12</button>
+      <button class="chip">시도 있음 3</button>
+      <button class="chip">결제수단 5</button>
+      <button class="chip">안전 9</button>
+    </div>
+
+    <div class="svc-list">
+
+      <!-- 위험 서비스 -->
+      <div class="svc-section-title">🚨 지난밤 시도가 있었어요</div>
+
+      <div class="svc-card risky">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#FF3B30;">배</div>
+          <div class="svc-info">
+            <div class="svc-name">배달의민족</div>
+            <div class="svc-meta">결제수단 · 신한카드 등록됨<br>마지막 로그인 · 3일 전</div>
+            <div class="svc-badges">
+              <span class="badge danger">기프티콘 시도</span>
+              <span class="badge warning">결제수단 있음</span>
+            </div>
+          </div>
+        </div>
+        <div class="attempt-detail">
+          <div class="row"><span class="k">시도 시각</span><span class="v">05:24</span></div>
+          <div class="row"><span class="k">시도 금액</span><span class="v">239,700원</span></div>
+          <div class="row"><span class="k">품목</span><span class="v">배민상품권 10만원권 x 3</span></div>
+        </div>
+        <div class="svc-actions">
+          <button class="a-btn disconnect">연결 해제</button>
+          <button class="a-btn keep" onclick="location.href='keep-confirm.html'">유지한다</button>
+        </div>
+        <button class="a-btn why" onclick="location.href='shap-explain.html'">
+          이 결제가 왜 위험한가요? ›
+        </button>
+      </div>
+
+      <div class="svc-card risky">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#4B7BEC;">쿠</div>
+          <div class="svc-info">
+            <div class="svc-name">쿠팡</div>
+            <div class="svc-meta">결제수단 · 삼성카드 등록됨<br>마지막 로그인 · 어제</div>
+            <div class="svc-badges">
+              <span class="badge danger">기프티콘 시도</span>
+              <span class="badge warning">결제수단 있음</span>
+            </div>
+          </div>
+        </div>
+        <div class="attempt-detail">
+          <div class="row"><span class="k">시도 시각</span><span class="v">05:55</span></div>
+          <div class="row"><span class="k">시도 금액</span><span class="v">233,900원</span></div>
+          <div class="row"><span class="k">품목</span><span class="v">쿠팡 상품권 10만원권</span></div>
+        </div>
+        <div class="svc-actions">
+          <button class="a-btn disconnect">연결 해제</button>
+          <button class="a-btn keep" onclick="location.href='keep-coupang.html'">유지한다</button>
+        </div>
+        <button class="a-btn why" onclick="location.href='shap-coupang.html'">
+          이 결제가 왜 위험한가요? ›
+        </button>
+      </div>
+
+      <div class="svc-card risky">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#00704A;">스</div>
+          <div class="svc-info">
+            <div class="svc-name">스타벅스</div>
+            <div class="svc-meta">결제수단 · 국민카드 등록됨<br>마지막 로그인 · 오늘 08:24</div>
+            <div class="svc-badges">
+              <span class="badge danger">기프티콘 시도</span>
+              <span class="badge warning">결제수단 있음</span>
+            </div>
+          </div>
+        </div>
+        <div class="attempt-detail">
+          <div class="row"><span class="k">시도 시각</span><span class="v">00:14</span></div>
+          <div class="row"><span class="k">시도 금액</span><span class="v">206,700원</span></div>
+          <div class="row"><span class="k">품목</span><span class="v">스타벅스 e카드 충전 7만원</span></div>
+        </div>
+        <div class="svc-actions">
+          <button class="a-btn disconnect">연결 해제</button>
+          <button class="a-btn keep" onclick="location.href='keep-starbucks.html'">유지한다</button>
+        </div>
+        <button class="a-btn why" onclick="location.href='shap-starbucks.html'">
+          이 결제가 왜 위험한가요? ›
+        </button>
+      </div>
+
+      <!-- 결제수단만 있음 -->
+      <div class="svc-section-title">⚠️ 결제수단이 등록된 곳</div>
+
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#00A661;">네</div>
+          <div class="svc-info">
+            <div class="svc-name">네이버쇼핑</div>
+            <div class="svc-meta">결제수단 · 카카오페이 등록됨<br>마지막 로그인 · 1주 전</div>
+            <div class="svc-badges">
+              <span class="badge warning">결제수단 있음</span>
+            </div>
+          </div>
+        </div>
+        <div class="svc-actions">
+          <button class="a-btn disconnect">연결 해제</button>
+          <button class="a-btn keep" onclick="location.href='keep-confirm.html'">유지한다</button>
+        </div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon" style="background:#8A44E8;">티</div>
+          <div class="svc-info">
+            <div class="svc-name">티빙</div>
+            <div class="svc-meta">결제수단 · 자동결제 등록됨<br>마지막 로그인 · 2일 전</div>
+            <div class="svc-badges">
+              <span class="badge warning">결제수단 있음</span>
+              <span class="badge info">유출 이력</span>
+            </div>
+          </div>
+        </div>
+        <div class="svc-actions">
+          <button class="a-btn disconnect">연결 해제</button>
+          <button class="a-btn keep" onclick="location.href='keep-confirm.html'">유지한다</button>
+        </div>
+      </div>
+
+      <!-- 안전 서비스 (축약 표기) -->
+      <div class="svc-section-title">🟢 결제수단이 없어요</div>
+
+      <div class="svc-safe">
+        <div class="svc-icon" style="background:#666;width:36px;height:36px;font-size:13px;">유</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--text-primary);">유튜브 프리미엄</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">마지막 로그인 · 5일 전</div>
+        </div>
+        <span class="badge safe">안전</span>
+      </div>
+
+      <div class="svc-safe">
+        <div class="svc-icon" style="background:#666;width:36px;height:36px;font-size:13px;">인</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--text-primary);">인스타그램</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">마지막 로그인 · 어제</div>
+        </div>
+        <span class="badge safe">안전</span>
+      </div>
+
+      <div class="svc-safe">
+        <div class="svc-icon" style="background:#666;width:36px;height:36px;font-size:13px;">외</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;color:var(--text-primary);">외 7개 서비스</div>
+          <div style="font-size:11px;color:var(--text-tertiary);">전부 결제수단 없음</div>
+        </div>
+        <span class="badge safe">안전</span>
+      </div>
+
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <!-- 일괄 조치 CTA -->
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="location.href='protect-action.html'">
+        모두 해제하고 비밀번호 변경
+      </button>
+      <button class="btn ghost" onclick="location.href='notify.html'">
+        나중에 다시 볼게요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<div style="position:fixed;left:12px;bottom:12px;z-index:9999;max-width:340px;
+            padding:10px 12px;border-radius:10px;background:rgba(238,246,255,.97);
+            border:1px solid #CFE4FF;font-size:11px;color:#1B5FAA;line-height:1.5;
+            font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+  <b>LIVE</b> · 이 화면의 숫자는 <code>FDS_통합_스코어링.ipynb</code>가 계산한
+  <code>screen_payload.json</code>에서 주입되었습니다.<br>
+  계정 <b>U0067</b> · 노출 정황 0점 ·
+  계정 장악 100점 → 조치 <b>차단 + 계정 잠금</b><br>위험 감지 3건
+</div>
+
+<div style="position:fixed;right:12px;bottom:12px;z-index:9999;
+            padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.97);
+            border:1px solid #E3E5E8;box-shadow:0 4px 16px rgba(0,0,0,.12);
+            font-family:-apple-system,sans-serif;display:flex;align-items:center;gap:8px">
+  <div style="font-size:11px;color:#666;line-height:1.35;text-align:right">
+    <b style="color:#111">4 / 11</b><br>연결 서비스 12곳
+  </div>
+  <a href="notify.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#fff;color:#333;border:1px solid #ddd">‹ 이전</a><a href="shap-starbucks.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#111;color:#fff">다음 ›</a>
+</div>
+</body>
+</html>

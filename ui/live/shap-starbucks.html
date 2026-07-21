@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>왜 위험하다고 판단했나요?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ============================================
+   FDS 프로토타입 공통 스타일
+   카카오페이 톤 (흰 배경 + 검정 + 옐로우 CTA)
+   ============================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Colors */
+  --kakao-yellow: #FEE500;
+  --kakao-yellow-dark: #FADA0A;
+  --text-primary: #191919;
+  --text-secondary: #767676;
+  --text-tertiary: #A0A0A0;
+  --bg-white: #FFFFFF;
+  --bg-section: #F7F8FA;
+  --bg-card: #F5F6F8;
+  --border: #EEEEEE;
+  --border-strong: #E0E0E0;
+
+  --danger: #FF3B30;
+  --danger-bg: #FFF1F0;
+  --warning: #FF9500;
+  --warning-bg: #FFF7EB;
+  --safe: #00A661;
+  --safe-bg: #E7F7EF;
+  --info: #3182F6;
+  --info-bg: #EEF5FF;
+
+  /* Typography scale */
+  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 모바일 프레임 ============ */
+.device {
+  width: 375px;
+  height: 812px;
+  background: var(--bg-white);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 10px solid #1a1a1a;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-white);
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ============ 상태바 ============ */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.status-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.status-bar .signal::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 10px;
+  background:
+    linear-gradient(to top, var(--text-primary) 30%, transparent 30%) 0 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 50%, transparent 50%) 4px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 75%, transparent 75%) 8px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 100%, transparent 100%) 12px 0/3px 100% no-repeat;
+}
+
+.status-bar .battery {
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid var(--text-primary);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+
+.status-bar .battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 2px;
+  height: 4px;
+  background: var(--text-primary);
+  border-radius: 0 1px 1px 0;
+}
+
+.status-bar .battery-fill {
+  height: 100%;
+  width: 75%;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+
+/* ============ 앱 헤더 ============ */
+.app-header {
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.app-header .back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.app-header .actions {
+  display: flex;
+  gap: 16px;
+}
+
+.app-header .actions button {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============ 콘텐츠 ============ */
+.content {
+  padding: 20px 20px 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.subtle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============ 카드 ============ */
+.card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.card.flat {
+  background: var(--bg-card);
+  border: none;
+}
+
+/* ============ CTA 버튼 ============ */
+.cta-fixed {
+  padding: 12px 20px 24px;
+  background: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: transform 0.05s ease;
+  letter-spacing: -0.2px;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary {
+  background: var(--kakao-yellow);
+  color: var(--text-primary);
+}
+
+.btn.secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 8px;
+}
+
+.btn.danger {
+  background: var(--text-primary);
+  color: var(--bg-white);
+}
+
+/* ============ 뱃지 ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.warning { background: var(--warning-bg); color: var(--warning); }
+.badge.safe { background: var(--safe-bg); color: var(--safe); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--bg-card); color: var(--text-secondary); }
+
+/* ============ 서비스 아이콘 (연동 서비스용) ============ */
+.svc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ============ 유틸 ============ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stack { display: flex; flex-direction: column; gap: 4px; }
+
+.divider {
+  height: 8px;
+  background: var(--bg-section);
+  margin: 0 -20px;
+}
+
+.mono-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+/* ============ 페이지 라벨 (튜토리얼 안내용) ============ */
+.page-label {
+  position: absolute;
+  top: -32px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+}
+
+</style>
+<style>
+  .explain-hero {
+    padding: 20px 20px 24px;
+    background: var(--bg-white);
+  }
+  .explain-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .explain-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* 대상 결제 요약 */
+  .target {
+    margin: 0 20px 20px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .target .icon {
+    width: 40px; height: 40px;
+    background: #FF3B30;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .target .body { flex: 1; }
+  .target .t1 { font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; }
+  .target .t2 { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .target .amt {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 위험 점수 표시 */
+  .risk-score {
+    margin: 0 20px 8px;
+    padding: 16px 18px;
+    background: var(--text-primary);
+    border-radius: 14px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .risk-score .label {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  .risk-score .value {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .risk-score .value .max {
+    font-size: 13px;
+    opacity: 0.5;
+    font-weight: 500;
+  }
+  .risk-score .verdict {
+    background: var(--danger);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+  }
+
+  /* 요인 리스트 */
+  .factors {
+    padding: 12px 20px 100px;
+  }
+  .factors-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .factors-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .factors-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .factor {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .factor-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .factor-emoji {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: var(--bg-card);
+  }
+  .factor-body { flex: 1; min-width: 0; }
+  .factor-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.35;
+  }
+  .factor-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .factor-impact {
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .factor-impact.high { color: var(--danger); }
+  .factor-impact.mid { color: var(--warning); }
+  .factor-impact.low { color: var(--text-tertiary); }
+
+  /* 기여도 바 */
+  .factor-bar {
+    height: 6px;
+    background: var(--bg-card);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .factor-bar .fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--danger);
+  }
+  .factor-bar .fill.mid { background: var(--warning); }
+  .factor-bar .fill.low { background: var(--text-tertiary); }
+
+  /* 하단 설명 */
+  .factors-note {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--info-bg);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--info);
+    line-height: 1.55;
+  }
+  .factors-note strong { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">6. SHAP 고객 설명 페이지 (신규)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <button class="back" onclick="location.href='linked-accounts.html'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="title">위험 판단 근거</div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <!-- Hero -->
+    <div class="explain-hero">
+      <div class="explain-title">
+        이 결제를 왜<br>위험하다고 봤나요?
+      </div>
+      <div class="explain-desc">
+        AI가 지난 결제 기록과 이번 시도를 비교해<br>다섯 가지 근거로 판단했어요.
+      </div>
+    </div>
+
+    <!-- 대상 결제 -->
+    <div class="target">
+      <div class="icon" style="background:#00704A;">스</div>
+      <div class="body">
+        <div class="t1">05:24 · 해외결제</div>
+        <div class="t2">해외결제 결제 시도</div>
+      </div>
+      <div class="amt">239,700원</div>
+    </div>
+
+    <!-- 위험 점수 -->
+    <div class="risk-score">
+      <div>
+        <div class="label">종합 위험 점수</div>
+        <div style="height:4px;"></div>
+        <div class="value mono-num">100<span class="max">/100</span></div>
+      </div>
+      <div class="verdict">매우 위험</div>
+    </div>
+
+    <div class="factors">
+      <div class="factors-head">
+        <div class="factors-title">판단에 쓰인 다섯 가지 근거</div>
+        <div class="factors-sub">기여도 순</div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">🌐</div>
+          <div class="factor-body">
+            <div class="factor-title">여러 계정에 접속을 시도한 곳에서 로그인 요청이 있었어요</div>
+            <div class="factor-desc">같은 접속처에서 다수 계정에 로그인 시도가 관측됨</div>
+          </div>
+          <div class="factor-impact high mono-num">+25</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:100%;"></div></div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">🌏</div>
+          <div class="factor-body">
+            <div class="factor-title">평소 접속하지 않던 지역에서 로그인되었어요</div>
+            <div class="factor-desc">최근 이 계정은 국내에서만 접속</div>
+          </div>
+          <div class="factor-impact high mono-num">+25</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:100%;"></div></div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">✏️</div>
+          <div class="factor-body">
+            <div class="factor-title">로그인 직후 연락처가 변경되었어요</div>
+            <div class="factor-desc">로그인 성공 60분 내 연락처 변경 · 이례적 패턴</div>
+          </div>
+          <div class="factor-impact high mono-num">+20</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:80%;"></div></div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">💸</div>
+          <div class="factor-body">
+            <div class="factor-title">평소보다 큰 금액이었어요</div>
+            <div class="factor-desc">평소 결제 금액 대비 이탈</div>
+          </div>
+          <div class="factor-impact mid mono-num">+18.6</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:74%;"></div></div>
+      </div>
+
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">📱</div>
+          <div class="factor-body">
+            <div class="factor-title">평소 쓰지 않던 기기에서 접속했어요</div>
+            <div class="factor-desc">이 계정에서 관측된 적 없는 기기</div>
+          </div>
+          <div class="factor-impact mid mono-num">+15</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:60%;"></div></div>
+      </div>
+
+      <div class="factors-note">
+        <strong>다섯 가지 근거가 모두 겹친 순간에만 이런 점수가 나와요.</strong>
+        각 근거 하나만으로는 위험하다고 판단하지 않아요. 조합됐을 때만 이례적인 패턴이 되기 때문이에요.
+      </div>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="location.href='linked-accounts.html'">
+        이해했어요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<div style="position:fixed;left:12px;bottom:12px;z-index:9999;max-width:340px;
+            padding:10px 12px;border-radius:10px;background:rgba(238,246,255,.97);
+            border:1px solid #CFE4FF;font-size:11px;color:#1B5FAA;line-height:1.5;
+            font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+  <b>LIVE</b> · 이 화면의 숫자는 <code>FDS_통합_스코어링.ipynb</code>가 계산한
+  <code>screen_payload.json</code>에서 주입되었습니다.<br>
+  계정 <b>U0067</b> · 노출 정황 0점 ·
+  계정 장악 100점 → 조치 <b>차단 + 계정 잠금</b>
+</div>
+
+<div style="position:fixed;right:12px;bottom:12px;z-index:9999;
+            padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.97);
+            border:1px solid #E3E5E8;box-shadow:0 4px 16px rgba(0,0,0,.12);
+            font-family:-apple-system,sans-serif;display:flex;align-items:center;gap:8px">
+  <div style="font-size:11px;color:#666;line-height:1.35;text-align:right">
+    <b style="color:#111">5 / 11</b><br>왜 위험한가 · 기여도
+  </div>
+  <a href="linked-accounts.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#fff;color:#333;border:1px solid #ddd">‹ 이전</a><a href="keep-starbucks.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#111;color:#fff">다음 ›</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>재감지 (강력 알림)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* ============================================
+   FDS 프로토타입 공통 스타일
+   카카오페이 톤 (흰 배경 + 검정 + 옐로우 CTA)
+   ============================================ */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Colors */
+  --kakao-yellow: #FEE500;
+  --kakao-yellow-dark: #FADA0A;
+  --text-primary: #191919;
+  --text-secondary: #767676;
+  --text-tertiary: #A0A0A0;
+  --bg-white: #FFFFFF;
+  --bg-section: #F7F8FA;
+  --bg-card: #F5F6F8;
+  --border: #EEEEEE;
+  --border-strong: #E0E0E0;
+
+  --danger: #FF3B30;
+  --danger-bg: #FFF1F0;
+  --warning: #FF9500;
+  --warning-bg: #FFF7EB;
+  --safe: #00A661;
+  --safe-bg: #E7F7EF;
+  --info: #3182F6;
+  --info-bg: #EEF5FF;
+
+  /* Typography scale */
+  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ 모바일 프레임 ============ */
+.device {
+  width: 375px;
+  height: 812px;
+  background: var(--bg-white);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 10px solid #1a1a1a;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-white);
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ============ 상태바 ============ */
+.status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.status-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.status-bar .signal::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 10px;
+  background:
+    linear-gradient(to top, var(--text-primary) 30%, transparent 30%) 0 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 50%, transparent 50%) 4px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 75%, transparent 75%) 8px 0/3px 100% no-repeat,
+    linear-gradient(to top, var(--text-primary) 100%, transparent 100%) 12px 0/3px 100% no-repeat;
+}
+
+.status-bar .battery {
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid var(--text-primary);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+
+.status-bar .battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 2px;
+  height: 4px;
+  background: var(--text-primary);
+  border-radius: 0 1px 1px 0;
+}
+
+.status-bar .battery-fill {
+  height: 100%;
+  width: 75%;
+  background: var(--text-primary);
+  border-radius: 1px;
+}
+
+/* ============ 앱 헤더 ============ */
+.app-header {
+  height: 52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.app-header .back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.app-header .actions {
+  display: flex;
+  gap: 16px;
+}
+
+.app-header .actions button {
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+/* ============ 콘텐츠 ============ */
+.content {
+  padding: 20px 20px 40px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.subtle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ============ 카드 ============ */
+.card {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.card.flat {
+  background: var(--bg-card);
+  border: none;
+}
+
+/* ============ CTA 버튼 ============ */
+.cta-fixed {
+  padding: 12px 20px 24px;
+  background: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: transform 0.05s ease;
+  letter-spacing: -0.2px;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary {
+  background: var(--kakao-yellow);
+  color: var(--text-primary);
+}
+
+.btn.secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 8px;
+}
+
+.btn.danger {
+  background: var(--text-primary);
+  color: var(--bg-white);
+}
+
+/* ============ 뱃지 ============ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+}
+
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.warning { background: var(--warning-bg); color: var(--warning); }
+.badge.safe { background: var(--safe-bg); color: var(--safe); }
+.badge.info { background: var(--info-bg); color: var(--info); }
+.badge.neutral { background: var(--bg-card); color: var(--text-secondary); }
+
+/* ============ 서비스 아이콘 (연동 서비스용) ============ */
+.svc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ============ 유틸 ============ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stack { display: flex; flex-direction: column; gap: 4px; }
+
+.divider {
+  height: 8px;
+  background: var(--bg-section);
+  margin: 0 -20px;
+}
+
+.mono-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.5px;
+}
+
+/* ============ 페이지 라벨 (튜토리얼 안내용) ============ */
+.page-label {
+  position: absolute;
+  top: -32px;
+  left: 0;
+  color: #999;
+  font-size: 12px;
+  font-family: var(--font);
+  font-weight: 500;
+}
+
+</style>
+<style>
+  /* 재감지는 위험색 배경 대비를 더 강하게 */
+  .re-header-bg {
+    background: linear-gradient(180deg, var(--danger-bg) 0%, var(--bg-white) 100%);
+    padding-bottom: 12px;
+  }
+
+  .re-hero {
+    padding: 20px 20px 4px;
+  }
+  .re-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .re-eyebrow .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--danger);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+  .re-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .re-title .em { color: var(--danger); }
+  .re-desc {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .re-desc .em {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  /* 회고 카드: 아까 유지하셨죠 */
+  .callback {
+    margin: 16px 20px 12px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .callback-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .callback-body { flex: 1; }
+  .callback-t {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .callback-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 1px;
+  }
+
+  /* 12분 사이에 일어난 일 */
+  .timeline {
+    margin: 4px 20px 12px;
+    background: white;
+    border: 1px solid var(--danger);
+    border-radius: 16px;
+    padding: 16px 18px;
+  }
+  .timeline-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    width: 54px;
+    flex-shrink: 0;
+    padding-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline-body { flex: 1; }
+  .timeline-body .t-title {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  .timeline-body .t-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .critical-mark {
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
+
+  /* 위험도 */
+  .risk-anchor {
+    margin: 4px 20px 12px;
+    background: var(--danger);
+    color: white;
+    border-radius: 16px;
+    padding: 20px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .risk-anchor .l .label {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .risk-anchor .l .value {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .risk-anchor .verdict {
+    font-size: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  /* 즉시 조치 안내 */
+  .now-action {
+    margin: 4px 20px 20px;
+    padding: 16px 18px;
+    background: var(--text-primary);
+    border-radius: 14px;
+    color: white;
+  }
+  .now-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .now-desc {
+    font-size: 12px;
+    opacity: 0.85;
+    line-height: 1.55;
+  }
+  .now-desc strong {
+    font-weight: 700;
+    opacity: 1;
+    color: var(--kakao-yellow);
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">C. 재감지 (유지 12분 뒤, 우려가 현실이 됨)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:53</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="re-header-bg">
+      <div class="app-header" style="background:transparent; border:none;">
+        <div style="width:32px;"></div>
+        <div class="title">계정 보호 긴급 알림</div>
+        <div style="width:32px;"></div>
+      </div>
+
+      <!-- Hero: 서사 톤 -->
+      <div class="re-hero">
+        <div class="re-eyebrow">
+          <span class="dot"></span>
+          <span>지금 즉시 조치가 필요해요</span>
+        </div>
+        <div class="re-title">
+          우려하신 대로<br>
+          <span class="em">실제 탈취였어요</span>
+        </div>
+        <div class="re-desc">
+          유지하기로 선택하신 뒤 <span class="em">12분 만에</span><br>
+          공격자가 비밀번호를 바꾸려고 했어요.
+        </div>
+      </div>
+    </div>
+
+    <!-- 회고 카드 -->
+    <div class="callback">
+      <div class="callback-time">9:41</div>
+      <div class="callback-body">
+        <div class="callback-t">지현님이 "유지한다"를 선택하셨어요</div>
+        <div class="callback-sub">배달의민족 · 안전망을 켜둔 상태로 감시 시작</div>
+      </div>
+    </div>
+
+    <!-- 12분 사이 타임라인 -->
+    <div class="timeline">
+      <div class="timeline-title">
+        📡 그 뒤 12분 동안 이런 일이 있었어요
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">9:47</div>
+        <div class="timeline-body">
+          <div class="t-title">공격자가 다시 로그인 시도</div>
+          <div class="t-meta">같은 싱가포르 IP · 이번엔 성공</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">9:51</div>
+        <div class="timeline-body">
+          <div class="t-title">전화번호 변경 시도<span class="critical-mark">차단</span></div>
+          <div class="t-meta">2단계 인증 미설정 · 카카오 정책상 인증 필요</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">9:53</div>
+        <div class="timeline-body">
+          <div class="t-title">비밀번호 변경됨<span class="critical-mark">감지</span></div>
+          <div class="t-meta">유지 결정 12분 뒤 · 알림 채널을 끊으려는 시도</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 위험도 최고 -->
+    <div class="risk-anchor">
+      <div class="l">
+        <div class="label">현재 위험도</div>
+        <div class="value">최고 단계</div>
+      </div>
+      <div class="verdict">계정 잠금 권장</div>
+    </div>
+
+    <!-- 즉시 조치 안내 -->
+    <div class="now-action">
+      <div class="now-title">💡 지금 계정을 잠그면</div>
+      <div class="now-desc">
+        공격자가 바꿔둔 비밀번호가 <strong>무효화</strong>되고, 지현님이 <strong>본인 인증</strong>으로 계정을 되찾을 수 있어요.
+      </div>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <!-- 조치 CTA: 이번엔 유지 옵션 없음 -->
+    <div class="cta-fixed">
+      <button class="btn danger" onclick="location.href='account-locked.html'">
+        지금 즉시 계정 잠그기
+      </button>
+      <button class="btn ghost" onclick="alert('본인 인증을 위해 고객센터로 연결됩니다.');">
+        고객센터로 도움 요청
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<div style="position:fixed;left:12px;bottom:12px;z-index:9999;max-width:360px;
+            padding:10px 12px;border-radius:10px;background:rgba(255,247,237,.97);
+            border:1px solid #FFD9A8;font-size:11px;color:#8A4B08;line-height:1.5;
+            font-family:-apple-system,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+  <b>근거</b> · C. 재감지 — 실제 탈취 확인<br>
+  실측(합성 데이터 19건): 계정 탈취 성공 → <b>계정정보 변경</b>까지
+  중앙값 <b>31분</b>(최소 4분) · → <b>사기 결제</b>까지 중앙값 <b>90분</b>(최소 26분)<br>
+  <span style="opacity:.8">화면의 "12분"은 사용자가 [유지한다]를 누른 뒤의 시간이라
+  파이프라인이 계산하지 않습니다. 시나리오 값 그대로 두었습니다.</span>
+</div>
+
+<div style="position:fixed;right:12px;bottom:12px;z-index:9999;
+            padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.97);
+            border:1px solid #E3E5E8;box-shadow:0 4px 16px rgba(0,0,0,.12);
+            font-family:-apple-system,sans-serif;display:flex;align-items:center;gap:8px">
+  <div style="font-size:11px;color:#666;line-height:1.35;text-align:right">
+    <b style="color:#111">9 / 11</b><br>C. 재감지 — 실제 탈취
+  </div>
+  <a href="retry-lock.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#fff;color:#333;border:1px solid #ddd">‹ 이전</a><a href="account-locked.html" style="display:inline-block;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;background:#111;color:#fff">다음 ›</a>
+</div>
+</body>
+</html>
