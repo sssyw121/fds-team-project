@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카카오페이 - 홈 (평시)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* 홈 전용 스타일 */
+  .home-header {
+    padding: 8px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-white);
+  }
+  .kp-logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .kp-logo .dot {
+    width: 22px; height: 22px;
+    background: var(--kakao-yellow);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+  .icon-btn {
+    background: none; border: none; cursor: pointer;
+    width: 32px; height: 32px;
+    color: var(--text-primary);
+  }
+  .header-actions { display: flex; gap: 8px; }
+
+  /* 자산 카드 */
+  .asset {
+    padding: 24px 20px 20px;
+    background: var(--bg-white);
+  }
+  .asset-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .asset-amount {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .asset-amount .unit { font-size: 22px; font-weight: 700; }
+  .asset-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .asset-actions .mini-btn {
+    padding: 10px 16px;
+    background: var(--bg-card);
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: var(--font);
+  }
+
+  /* 그리드 메뉴 */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    padding: 12px 12px 0;
+  }
+  .menu-item {
+    background: none; border: none; cursor: pointer;
+    padding: 14px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font);
+  }
+  .menu-item .m-icon {
+    width: 40px; height: 40px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .menu-item .m-label {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* 최근 결제 */
+  .recent {
+    padding: 20px;
+  }
+  .recent-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .recent-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .recent-more {
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font);
+  }
+
+  .txn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+  }
+  .txn-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .txn-body { flex: 1; min-width: 0; }
+  .txn-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .txn-time {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .txn-amount {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* 결제 큰 버튼 (홈에서 결제로 진입) */
+  .pay-cta {
+    margin: 8px 20px 20px;
+    padding: 18px;
+    background: var(--text-primary);
+    border-radius: 16px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border: none;
+    width: calc(100% - 40px);
+    font-family: var(--font);
+  }
+  .pay-cta .l { text-align: left; }
+  .pay-cta .l .t1 { font-size: 12px; opacity: 0.7; margin-bottom: 2px; }
+  .pay-cta .l .t2 { font-size: 15px; font-weight: 700; }
+  .pay-cta .arrow { font-size: 20px; opacity: 0.7; }
+
+  /* 하단 탭바 */
+  .tabbar {
+    background: var(--bg-white);
+    border-top: 1px solid var(--border);
+    padding: 8px 0 24px;
+    display: flex;
+    justify-content: space-around;
+    flex-shrink: 0;
+  }
+  .tab {
+    background: none; border: none;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    padding: 6px 4px;
+    cursor: pointer;
+    font-family: var(--font);
+    color: var(--text-tertiary);
+  }
+  .tab.active { color: var(--text-primary); }
+  .tab .t-icon { font-size: 20px; }
+  .tab .t-label { font-size: 10px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">1. 간편결제 메인 (평시)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <!-- 상태바 -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span>
+        <span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- 앱 헤더 -->
+    <div class="home-header">
+      <div class="kp-logo">
+        <span class="dot">P</span>
+        <span>pay</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="검색">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-btn" title="알림">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M6 8a6 6 0 1112 0c0 5 2 7 2 7H4s2-2 2-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 19a2 2 0 004 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 자산 카드 -->
+    <div class="asset">
+      <div class="asset-label">머니</div>
+      <div class="asset-amount mono-num">1,234,567<span class="unit">원</span></div>
+      <div class="asset-actions">
+        <button class="mini-btn">충전</button>
+        <button class="mini-btn">송금</button>
+        <button class="mini-btn">더보기</button>
+      </div>
+    </div>
+
+    <!-- 결제 큰 CTA -->
+    <button class="pay-cta" onclick="location.href='home-alert.html'">
+      <div class="l">
+        <div class="t1">간편결제</div>
+        <div class="t2">결제하러 가기</div>
+      </div>
+      <div class="arrow">→</div>
+    </button>
+
+    <!-- 그리드 메뉴 -->
+    <div class="menu-grid">
+      <button class="menu-item">
+        <div class="m-icon">💳</div><span class="m-label">결제내역</span>
+      </button>
+      <button class="menu-item">
+        <div class="m-icon">📊</div><span class="m-label">자산관리</span>
+      </button>
+      <button class="menu-item">
+        <div class="m-icon">🎁</div><span class="m-label">혜택</span>
+      </button>
+      <button class="menu-item">
+        <div class="m-icon">📱</div><span class="m-label">전체</span>
+      </button>
+    </div>
+
+    <div class="divider" style="margin-top:12px;"></div>
+
+    <!-- 최근 결제 -->
+    <div class="recent">
+      <div class="recent-head">
+        <div class="recent-title">최근 결제</div>
+        <button class="recent-more">전체보기</button>
+      </div>
+      <div class="txn">
+        <div class="txn-icon">☕</div>
+        <div class="txn-body">
+          <div class="txn-title">스타벅스 종로점</div>
+          <div class="txn-time">오늘 08:24</div>
+        </div>
+        <div class="txn-amount mono-num">4,800원</div>
+      </div>
+      <div class="txn">
+        <div class="txn-icon">🍔</div>
+        <div class="txn-body">
+          <div class="txn-title">배달의민족</div>
+          <div class="txn-time">어제 20:15</div>
+        </div>
+        <div class="txn-amount mono-num">18,900원</div>
+      </div>
+      <div class="txn">
+        <div class="txn-icon">🛒</div>
+        <div class="txn-body">
+          <div class="txn-title">쿠팡</div>
+          <div class="txn-time">2일 전</div>
+        </div>
+        <div class="txn-amount mono-num">32,400원</div>
+      </div>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <!-- 하단 탭바 -->
+    <div class="tabbar">
+      <button class="tab active">
+        <span class="t-icon">🏠</span><span class="t-label">홈</span>
+      </button>
+      <button class="tab">
+        <span class="t-icon">💳</span><span class="t-label">결제</span>
+      </button>
+      <button class="tab">
+        <span class="t-icon">💰</span><span class="t-label">자산</span>
+      </button>
+      <button class="tab">
+        <span class="t-icon">🎁</span><span class="t-label">혜택</span>
+      </button>
+      <button class="tab">
+        <span class="t-icon">☰</span><span class="t-label">전체</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

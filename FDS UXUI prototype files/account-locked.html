@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>계정 잠금 완료</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* 상단 안정감을 주는 그라디언트 */
+  .locked-header {
+    background: linear-gradient(180deg, var(--safe-bg) 0%, var(--bg-white) 100%);
+    padding: 8px 20px 20px;
+  }
+
+  /* Hero */
+  .locked-hero {
+    padding: 8px 20px 0;
+    text-align: center;
+  }
+  .locked-icon-wrap {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: var(--safe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px auto 16px;
+    box-shadow: 0 8px 24px rgba(0, 166, 97, 0.3);
+  }
+  .locked-icon-wrap svg { width: 36px; height: 36px; color: white; }
+
+  .locked-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .locked-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .locked-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .locked-time .dot {
+    width: 6px; height: 6px;
+    background: var(--safe);
+    border-radius: 50%;
+  }
+
+  /* 자동 처리 리스트 */
+  .auto-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 8px 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .auto-list {
+    margin: 0 20px 12px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .auto-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .auto-item:last-child { border-bottom: none; }
+  .auto-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--safe);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .auto-body { flex: 1; min-width: 0; }
+  .auto-item-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .auto-item-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+
+  /* 다음 단계 */
+  .next-section {
+    margin: 8px 20px 12px;
+    padding: 18px;
+    background: var(--info-bg);
+    border-radius: 16px;
+  }
+  .next-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--info);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .next-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .next-desc {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+
+  /* 인증 문자 카드 */
+  .verify-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .verify-icon {
+    width: 40px; height: 40px;
+    background: #34C759;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .verify-body { flex: 1; min-width: 0; }
+  .verify-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .verify-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+  .verify-tag {
+    background: var(--safe-bg);
+    color: var(--safe);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+
+  /* 무엇이 안전해졌나 */
+  .now-safe {
+    margin: 0 20px 20px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .now-safe strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">D. 계정 잠금 완료 & 되찾기 안내</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:53</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="locked-header">
+      <div class="app-header" style="background:transparent; border:none; padding:0;">
+        <div style="width:32px;"></div>
+        <div class="title">계정 보호 완료</div>
+        <div style="width:32px;"></div>
+      </div>
+
+      <!-- Hero: 잠금 완료 -->
+      <div class="locked-hero">
+        <div class="locked-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="10" width="16" height="11" rx="2"/>
+            <path d="M8 10V7a4 4 0 018 0v3"/>
+          </svg>
+        </div>
+        <div class="locked-title">계정을 잠갔어요</div>
+        <div class="locked-desc">
+          공격자가 이 계정으로 다시 접근할 수 없어요.<br>
+          이제 지현님이 되찾을 차례예요.
+        </div>
+        <div class="locked-time">
+          <span class="dot"></span>
+          <span>9:53:07에 잠금 완료</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 자동 처리된 것들 -->
+    <div class="auto-title">
+      ⚙️ 잠금과 함께 자동으로 처리됐어요
+    </div>
+
+    <div class="auto-list">
+      <div class="auto-item">
+        <div class="auto-check">✓</div>
+        <div class="auto-body">
+          <div class="auto-item-title">공격자 세션 강제 종료</div>
+          <div class="auto-item-desc">싱가포르 IP 접속이 즉시 차단됐어요</div>
+        </div>
+      </div>
+      <div class="auto-item">
+        <div class="auto-check">✓</div>
+        <div class="auto-body">
+          <div class="auto-item-title">모든 기기에서 로그아웃</div>
+          <div class="auto-item-desc">지현님의 아이폰 포함, 이 계정으로 로그인된 모든 세션 초기화</div>
+        </div>
+      </div>
+      <div class="auto-item">
+        <div class="auto-check">✓</div>
+        <div class="auto-body">
+          <div class="auto-item-title">공격자가 바꾼 비밀번호 무효화</div>
+          <div class="auto-item-desc">9:53에 변경된 비밀번호로는 더 이상 로그인할 수 없어요</div>
+        </div>
+      </div>
+      <div class="auto-item">
+        <div class="auto-check">✓</div>
+        <div class="auto-body">
+          <div class="auto-item-title">연결 서비스 5곳 결제 일시 정지</div>
+          <div class="auto-item-desc">배달의민족·쿠팡·스타벅스·네이버쇼핑·티빙 결제 보호 유지</div>
+        </div>
+      </div>
+      <div class="auto-item">
+        <div class="auto-check">✓</div>
+        <div class="auto-body">
+          <div class="auto-item-title">원래 이메일·문자로 상황 알림 완료</div>
+          <div class="auto-item-desc">hyun****@naver.com · 010-****-1234</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 다음 단계: 본인 확인 -->
+    <div class="next-section">
+      <div class="next-eyebrow">다음 단계</div>
+      <div class="next-title">본인 확인 후 계정을 되찾으세요</div>
+      <div class="next-desc">
+        원래 등록된 휴대폰으로 인증 문자를 보냈어요.<br>
+        인증 후 새 비밀번호와 2단계 인증을 설정할 수 있어요.
+      </div>
+
+      <div class="verify-card">
+        <div class="verify-icon">💬</div>
+        <div class="verify-body">
+          <div class="verify-title">인증 문자 발송됨</div>
+          <div class="verify-desc">010-****-1234 · 9:53:12</div>
+        </div>
+        <span class="verify-tag">방금</span>
+      </div>
+    </div>
+
+    <!-- 안심 안내 -->
+    <div class="now-safe">
+      <strong>공격자는 이제 아무것도 할 수 없어요.</strong><br>
+      비밀번호를 다시 바꿔도, 새 기기로 접속해도 이 계정은 잠긴 상태예요. 지현님의 본인 확인이 있어야만 다시 열려요.
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="alert('실제 서비스에서는 SMS 앱으로 이동해 인증번호를 확인합니다.'); location.href='index.html';">
+        인증 문자 확인하러 가기
+      </button>
+      <button class="btn ghost" onclick="alert('고객센터 1899-9999로 연결됩니다.');">
+        문자가 안 왔어요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

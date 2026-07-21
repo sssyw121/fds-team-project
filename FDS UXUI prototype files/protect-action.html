@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>계정 보호 조치</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .protect-hero {
+    padding: 20px 20px 24px;
+    background: var(--bg-white);
+  }
+  .protect-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .protect-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* 진행 단계 */
+  .steps {
+    padding: 4px 20px 20px;
+  }
+  .step {
+    display: flex;
+    gap: 12px;
+    padding: 16px 14px;
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+  .step.done {
+    background: var(--safe-bg);
+    border-color: var(--safe);
+  }
+  .step.active {
+    background: var(--bg-white);
+    border-color: var(--text-primary);
+    border-width: 2px;
+    padding: 15px 13px;
+  }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step.done .step-num {
+    background: var(--safe);
+    color: white;
+  }
+  .step.active .step-num {
+    background: var(--text-primary);
+    color: white;
+  }
+
+  .step-body { flex: 1; }
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .step-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .step.done .step-desc {
+    color: var(--safe);
+    font-weight: 600;
+  }
+
+  .step-arrow {
+    color: var(--text-tertiary);
+    font-size: 18px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  .step.done .step-arrow { display: none; }
+  .step.done::after {
+    content: '✓';
+    color: var(--safe);
+    font-size: 20px;
+    font-weight: 800;
+    align-self: center;
+  }
+
+  /* 완료 요약 카드 */
+  .done-summary {
+    margin: 8px 20px 12px;
+    padding: 16px 18px;
+    background: var(--safe-bg);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .done-summary .icon {
+    width: 40px; height: 40px;
+    background: var(--safe);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 20px;
+    flex-shrink: 0;
+  }
+  .done-summary .body { flex: 1; }
+  .done-summary .t {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--safe);
+    margin-bottom: 2px;
+  }
+  .done-summary .d {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  /* 안내 박스 */
+  .info-box {
+    margin: 4px 20px 100px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .info-box strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">5. 보호조치 (일괄 변경)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <button class="back" onclick="history.back()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="title">계정 보호 조치</div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <!-- Hero -->
+    <div class="protect-hero">
+      <div class="protect-title">
+        세 단계로<br>계정을 안전하게 만들어요
+      </div>
+      <div class="protect-desc">
+        모두 완료하면 보호 상태가 해제되고<br>다시 평소처럼 결제할 수 있어요.
+      </div>
+    </div>
+
+    <!-- 완료 요약 -->
+    <div class="done-summary">
+      <div class="icon">✓</div>
+      <div class="body">
+        <div class="t">위험 서비스 3곳 연결 해제 완료</div>
+        <div class="d">배달의민족 · 쿠팡 · 스타벅스</div>
+      </div>
+    </div>
+
+    <!-- 단계 리스트 -->
+    <div class="steps">
+
+      <!-- 완료된 단계 -->
+      <button class="step done">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">위험 서비스 연결 해제</div>
+          <div class="step-desc">3곳 해제 · 방금 완료됨</div>
+        </div>
+      </button>
+
+      <!-- 진행 중인 단계 -->
+      <button class="step active">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">카카오 비밀번호 변경 <span class="badge danger" style="margin-left:4px;">필수</span></div>
+          <div class="step-desc">
+            지난 접속이 유효하지 않게 만들어요.<br>
+            변경 후 다른 기기는 자동으로 로그아웃돼요.
+          </div>
+        </div>
+        <div class="step-arrow">›</div>
+      </button>
+
+      <!-- 남은 단계 -->
+      <button class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">2단계 인증 켜기 <span class="badge info" style="margin-left:4px;">권장</span></div>
+          <div class="step-desc">
+            비밀번호가 다시 유출돼도<br>기기 인증 없이는 로그인이 안 돼요.
+          </div>
+        </div>
+        <div class="step-arrow">›</div>
+      </button>
+
+    </div>
+
+    <!-- 안내 -->
+    <div class="info-box">
+      <strong>비밀번호 변경만 완료해도 보호가 해제돼요.</strong><br>
+      2단계 인증은 다음에 켜셔도 되지만, 이번처럼 대규모 유출이 다시 발생했을 때 큰 도움이 돼요.
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="alert('실제 서비스에서는 카카오 계정 비밀번호 변경 화면으로 이동합니다.'); location.href='index.html';">
+        지금 비밀번호 변경하기
+      </button>
+      <button class="btn ghost" onclick="location.href='index.html'">
+        나중에 할게요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>왜 위험하다고 판단했나요?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .explain-hero {
+    padding: 20px 20px 24px;
+    background: var(--bg-white);
+  }
+  .explain-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .explain-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* 대상 결제 요약 */
+  .target {
+    margin: 0 20px 20px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .target .icon {
+    width: 40px; height: 40px;
+    background: #FF3B30;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .target .body { flex: 1; }
+  .target .t1 { font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; }
+  .target .t2 { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+  .target .amt {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 위험 점수 표시 */
+  .risk-score {
+    margin: 0 20px 8px;
+    padding: 16px 18px;
+    background: var(--text-primary);
+    border-radius: 14px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .risk-score .label {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  .risk-score .value {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .risk-score .value .max {
+    font-size: 13px;
+    opacity: 0.5;
+    font-weight: 500;
+  }
+  .risk-score .verdict {
+    background: var(--danger);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+  }
+
+  /* 요인 리스트 */
+  .factors {
+    padding: 12px 20px 100px;
+  }
+  .factors-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .factors-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .factors-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .factor {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .factor-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .factor-emoji {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: var(--bg-card);
+  }
+  .factor-body { flex: 1; min-width: 0; }
+  .factor-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.35;
+  }
+  .factor-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .factor-impact {
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .factor-impact.high { color: var(--danger); }
+  .factor-impact.mid { color: var(--warning); }
+  .factor-impact.low { color: var(--text-tertiary); }
+
+  /* 기여도 바 */
+  .factor-bar {
+    height: 6px;
+    background: var(--bg-card);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .factor-bar .fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--danger);
+  }
+  .factor-bar .fill.mid { background: var(--warning); }
+  .factor-bar .fill.low { background: var(--text-tertiary); }
+
+  /* 하단 설명 */
+  .factors-note {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--info-bg);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--info);
+    line-height: 1.55;
+  }
+  .factors-note strong { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">6. SHAP 고객 설명 페이지 (신규)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <button class="back" onclick="location.href='linked-accounts.html'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="title">위험 판단 근거</div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <!-- Hero -->
+    <div class="explain-hero">
+      <div class="explain-title">
+        이 결제를 왜<br>위험하다고 봤나요?
+      </div>
+      <div class="explain-desc">
+        AI가 지난 결제 기록과 이번 시도를 비교해<br>다섯 가지 근거로 판단했어요.
+      </div>
+    </div>
+
+    <!-- 대상 결제 -->
+    <div class="target">
+      <div class="icon" style="background:#00704A;">스</div>
+      <div class="body">
+        <div class="t1">03:29 · 스타벅스</div>
+        <div class="t2">스타벅스 e카드 충전 시도</div>
+      </div>
+      <div class="amt">7만원</div>
+    </div>
+
+    <!-- 위험 점수 -->
+    <div class="risk-score">
+      <div>
+        <div class="label">종합 위험 점수</div>
+        <div style="height:4px;"></div>
+        <div class="value mono-num">85<span class="max">/100</span></div>
+      </div>
+      <div class="verdict">매우 위험</div>
+    </div>
+
+    <div class="factors">
+      <div class="factors-head">
+        <div class="factors-title">판단에 쓰인 다섯 가지 근거</div>
+        <div class="factors-sub">기여도 순</div>
+      </div>
+
+      <!-- 요인 1: 신규 기기 -->
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">📱</div>
+          <div class="factor-body">
+            <div class="factor-title">처음 사용하는 기기예요</div>
+            <div class="factor-desc">평소 아이폰 대신 Samsung Galaxy · 안드로이드 11</div>
+          </div>
+          <div class="factor-impact high mono-num">+28</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:92%;"></div></div>
+      </div>
+
+      <!-- 요인 2: 낯선 위치 -->
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">🌏</div>
+          <div class="factor-body">
+            <div class="factor-title">한국 밖에서 접속했어요</div>
+            <div class="factor-desc">최근 30일간 이 계정은 국내에서만 접속</div>
+          </div>
+          <div class="factor-impact high mono-num">+24</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:78%;"></div></div>
+      </div>
+
+      <!-- 요인 3: 최근 이용 이력과 상반 -->
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">⚠️</div>
+          <div class="factor-body">
+            <div class="factor-title">몇 시간 전 국내에서 정상 결제가 있어요</div>
+            <div class="factor-desc">오늘 08:24 서울 종로에서 4,800원 결제 · 물리적으로 이동 불가</div>
+          </div>
+          <div class="factor-impact high mono-num">+18</div>
+        </div>
+        <div class="factor-bar"><div class="fill" style="width:60%;"></div></div>
+      </div>
+
+      <!-- 요인 4: 계정 변경 -->
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">✏️</div>
+          <div class="factor-body">
+            <div class="factor-title">방금 이메일이 바뀌었어요</div>
+            <div class="factor-desc">로그인 4분 뒤 이메일 변경 · 이례적 패턴</div>
+          </div>
+          <div class="factor-impact mid mono-num">+12</div>
+        </div>
+        <div class="factor-bar"><div class="fill mid" style="width:40%;"></div></div>
+      </div>
+
+      <!-- 요인 5: 환금성 -->
+      <div class="factor">
+        <div class="factor-row">
+          <div class="factor-emoji">🎫</div>
+          <div class="factor-body">
+            <div class="factor-title">되돌릴 수 없는 상품이에요</div>
+            <div class="factor-desc">e카드는 충전 즉시 잔액으로 전환 · 회수 불가</div>
+          </div>
+          <div class="factor-impact mid mono-num">+3</div>
+        </div>
+        <div class="factor-bar"><div class="fill mid" style="width:10%;"></div></div>
+      </div>
+
+      <!-- 안내 -->
+      <div class="factors-note">
+        <strong>다섯 가지 근거가 모두 겹친 순간에만 이런 점수가 나와요.</strong>
+        각 근거 하나만으로는 위험하다고 판단하지 않아요. 조합됐을 때만 이례적인 패턴이 되기 때문이에요.
+      </div>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="location.href='linked-accounts.html'">
+        이해했어요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

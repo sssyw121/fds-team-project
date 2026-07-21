@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>재감지 (강력 알림)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* 재감지는 위험색 배경 대비를 더 강하게 */
+  .re-header-bg {
+    background: linear-gradient(180deg, var(--danger-bg) 0%, var(--bg-white) 100%);
+    padding-bottom: 12px;
+  }
+
+  .re-hero {
+    padding: 20px 20px 4px;
+  }
+  .re-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .re-eyebrow .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--danger);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+  .re-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .re-title .em { color: var(--danger); }
+  .re-desc {
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .re-desc .em {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  /* 회고 카드: 아까 유지하셨죠 */
+  .callback {
+    margin: 16px 20px 12px;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .callback-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .callback-body { flex: 1; }
+  .callback-t {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .callback-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 1px;
+  }
+
+  /* 12분 사이에 일어난 일 */
+  .timeline {
+    margin: 4px 20px 12px;
+    background: white;
+    border: 1px solid var(--danger);
+    border-radius: 16px;
+    padding: 16px 18px;
+  }
+  .timeline-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--danger);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-time {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    width: 54px;
+    flex-shrink: 0;
+    padding-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline-body { flex: 1; }
+  .timeline-body .t-title {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  .timeline-body .t-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .critical-mark {
+    background: var(--danger);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+  }
+
+  /* 위험도 */
+  .risk-anchor {
+    margin: 4px 20px 12px;
+    background: var(--danger);
+    color: white;
+    border-radius: 16px;
+    padding: 20px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .risk-anchor .l .label {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .risk-anchor .l .value {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .risk-anchor .verdict {
+    font-size: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+
+  /* 즉시 조치 안내 */
+  .now-action {
+    margin: 4px 20px 20px;
+    padding: 16px 18px;
+    background: var(--text-primary);
+    border-radius: 14px;
+    color: white;
+  }
+  .now-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .now-desc {
+    font-size: 12px;
+    opacity: 0.85;
+    line-height: 1.55;
+  }
+  .now-desc strong {
+    font-weight: 700;
+    opacity: 1;
+    color: var(--kakao-yellow);
+  }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">C. 재감지 (유지 12분 뒤, 우려가 현실이 됨)</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:53</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="re-header-bg">
+      <div class="app-header" style="background:transparent; border:none;">
+        <div style="width:32px;"></div>
+        <div class="title">계정 보호 긴급 알림</div>
+        <div style="width:32px;"></div>
+      </div>
+
+      <!-- Hero: 서사 톤 -->
+      <div class="re-hero">
+        <div class="re-eyebrow">
+          <span class="dot"></span>
+          <span>지금 즉시 조치가 필요해요</span>
+        </div>
+        <div class="re-title">
+          우려하신 대로<br>
+          <span class="em">실제 탈취였어요</span>
+        </div>
+        <div class="re-desc">
+          유지하기로 선택하신 뒤 <span class="em">12분 만에</span><br>
+          공격자가 비밀번호를 바꾸려고 했어요.
+        </div>
+      </div>
+    </div>
+
+    <!-- 회고 카드 -->
+    <div class="callback">
+      <div class="callback-time">9:41</div>
+      <div class="callback-body">
+        <div class="callback-t">지현님이 "유지한다"를 선택하셨어요</div>
+        <div class="callback-sub">배달의민족 · 안전망을 켜둔 상태로 감시 시작</div>
+      </div>
+    </div>
+
+    <!-- 12분 사이 타임라인 -->
+    <div class="timeline">
+      <div class="timeline-title">
+        📡 그 뒤 12분 동안 이런 일이 있었어요
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">9:47</div>
+        <div class="timeline-body">
+          <div class="t-title">공격자가 다시 로그인 시도</div>
+          <div class="t-meta">같은 싱가포르 IP · 이번엔 성공</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">9:51</div>
+        <div class="timeline-body">
+          <div class="t-title">전화번호 변경 시도<span class="critical-mark">차단</span></div>
+          <div class="t-meta">2단계 인증 미설정 · 카카오 정책상 인증 필요</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-time">9:53</div>
+        <div class="timeline-body">
+          <div class="t-title">비밀번호 변경됨<span class="critical-mark">감지</span></div>
+          <div class="t-meta">유지 결정 12분 뒤 · 알림 채널을 끊으려는 시도</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 위험도 최고 -->
+    <div class="risk-anchor">
+      <div class="l">
+        <div class="label">현재 위험도</div>
+        <div class="value">최고 단계</div>
+      </div>
+      <div class="verdict">계정 잠금 권장</div>
+    </div>
+
+    <!-- 즉시 조치 안내 -->
+    <div class="now-action">
+      <div class="now-title">💡 지금 계정을 잠그면</div>
+      <div class="now-desc">
+        공격자가 바꿔둔 비밀번호가 <strong>무효화</strong>되고, 지현님이 <strong>본인 인증</strong>으로 계정을 되찾을 수 있어요.
+      </div>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <!-- 조치 CTA: 이번엔 유지 옵션 없음 -->
+    <div class="cta-fixed">
+      <button class="btn danger" onclick="location.href='account-locked.html'">
+        지금 즉시 계정 잠그기
+      </button>
+      <button class="btn ghost" onclick="alert('본인 인증을 위해 고객센터로 연결됩니다.');">
+        고객센터로 도움 요청
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

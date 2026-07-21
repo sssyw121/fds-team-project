@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>계정 보호 알림 (기능 5)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* 핵심 화면 - 인지 → 이해 → 조치 3단 흐름 */
+
+  .hero {
+    padding: 24px 20px 20px;
+    background: var(--bg-white);
+  }
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--danger);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hero-eyebrow .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--danger);
+    border-radius: 50%;
+  }
+  .hero-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+  .hero-title .highlight { color: var(--danger); }
+  .hero-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* 핵심 요약 카드 - Anchor Framing */
+  .anchor-card {
+    margin: 12px 20px;
+    background: var(--text-primary);
+    border-radius: 20px;
+    padding: 24px 20px;
+    color: white;
+  }
+  .anchor-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .anchor-big {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .anchor-slash {
+    font-size: 24px;
+    font-weight: 400;
+    opacity: 0.4;
+    padding: 0 4px;
+  }
+  .anchor-small {
+    font-size: 24px;
+    font-weight: 600;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+  .anchor-unit {
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.7;
+    margin-left: 2px;
+  }
+  .anchor-label {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .anchor-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.15);
+    margin: 18px 0 16px;
+  }
+  .anchor-attempted {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .anchor-attempted .label {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+  .anchor-attempted .value {
+    font-size: 18px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.3px;
+  }
+  .anchor-attempted .value .won {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-left: 2px;
+  }
+
+  /* 손실 회피 카드 - 막힌 피해 */
+  .loss-card {
+    margin: 0 20px 12px;
+    background: var(--danger-bg);
+    border-radius: 16px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .loss-card .l-icon { font-size: 22px; }
+  .loss-card .l-body { flex: 1; }
+  .loss-card .l-title {
+    font-size: 13px;
+    color: var(--danger);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .loss-card .l-desc {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  /* 무슨 일이 있었나 - 타임라인 */
+  .timeline {
+    margin: 20px 20px 12px;
+  }
+  .timeline-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+  }
+  .timeline-time {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    width: 60px;
+    flex-shrink: 0;
+    padding-top: 2px;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline-body { flex: 1; }
+  .timeline-body .t-title {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 2px;
+    line-height: 1.4;
+  }
+  .timeline-body .t-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .timeline-body .t-meta .amt {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* 미리보기 서비스 */
+  .preview-services {
+    margin: 20px 20px 12px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .preview-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .preview-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .preview-view {
+    font-size: 12px;
+    color: var(--info);
+    background: none; border: none; cursor: pointer;
+    font-family: var(--font); font-weight: 600;
+  }
+  .svc-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .svc-preview .svc-mini {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 12px;
+    flex-shrink: 0;
+  }
+  .svc-preview .svc-name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* 조치 안내 */
+  .action-hint {
+    margin: 4px 20px 100px;
+    padding: 14px 16px;
+    background: var(--info-bg);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--info);
+    line-height: 1.5;
+    display: flex; gap: 8px;
+  }
+  .action-hint .h-icon { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="page-label">3. 사용자 인지 화면 (기능 5) - 핵심</div>
+  <div class="screen">
+    <div class="scroll-area">
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="right">
+        <span class="signal"></span><span>5G</span>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- 헤더 -->
+    <div class="app-header">
+      <button class="back" onclick="location.href='home-alert.html'">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="title">계정 보호 알림</div>
+      <div style="width:32px;"></div>
+    </div>
+
+    <!-- Hero: 인지 -->
+    <div class="hero">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        <span>지난밤 03:24</span>
+      </div>
+      <div class="hero-title">
+        낯선 기기에서<br>
+        <span class="highlight">결제 시도가 있었어요</span>
+      </div>
+      <div class="hero-desc">
+        지현님의 카카오 계정으로 접속한 흔적이 있어<br>
+        연결된 서비스의 결제를 일시 보호했어요.
+      </div>
+    </div>
+
+    <!-- Anchor: 12곳 중 5곳 -->
+    <div class="anchor-card">
+      <div class="anchor-row">
+        <span class="anchor-big mono-num">5</span>
+        <span class="anchor-slash">/</span>
+        <span class="anchor-small mono-num">12</span>
+        <span class="anchor-unit">곳</span>
+      </div>
+      <div class="anchor-label">
+        연결된 서비스 중<br>
+        <strong>결제수단이 등록된 곳</strong>이 보호 중이에요
+      </div>
+      <div class="anchor-divider"></div>
+      <div class="anchor-attempted">
+        <span class="label">지난밤 결제 시도</span>
+        <span class="value mono-num">3건 · 47만<span class="won">원</span></span>
+      </div>
+    </div>
+
+    <!-- 손실 회피: 막힌 피해 강조 -->
+    <div class="loss-card">
+      <div class="l-icon">🛡️</div>
+      <div class="l-body">
+        <div class="l-title">47만원의 피해를 막았어요</div>
+        <div class="l-desc">기프티콘은 승인되면 즉시 사용돼 되돌릴 수 없어요.</div>
+      </div>
+    </div>
+
+    <!-- 타임라인 (구체 > 추상) -->
+    <div class="timeline">
+      <div class="timeline-title">지난밤 일어난 일</div>
+      <div class="timeline-item">
+        <div class="timeline-time">03:24</div>
+        <div class="timeline-body">
+          <div class="t-title">해외 IP에서 로그인</div>
+          <div class="t-meta">싱가포르 · 처음 보는 안드로이드 기기</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">03:25</div>
+        <div class="timeline-body">
+          <div class="t-title">가입 이메일 변경 시도</div>
+          <div class="t-meta">원래 이메일로도 알림을 보냈어요</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">03:27</div>
+        <div class="timeline-body">
+          <div class="t-title">배달의민족에서 결제 시도 <span class="badge danger" style="margin-left:4px;">차단</span></div>
+          <div class="t-meta">배민상품권 · <span class="amt">30만원</span></div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">03:28</div>
+        <div class="timeline-body">
+          <div class="t-title">쿠팡에서 결제 시도 <span class="badge danger" style="margin-left:4px;">차단</span></div>
+          <div class="t-meta">쿠팡 상품권 · <span class="amt">10만원</span></div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">03:29</div>
+        <div class="timeline-body">
+          <div class="t-title">스타벅스에서 결제 시도 <span class="badge danger" style="margin-left:4px;">차단</span></div>
+          <div class="t-meta">스타벅스 e카드 충전 · <span class="amt">7만원</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 미리보기 -->
+    <div class="preview-services">
+      <div class="preview-head">
+        <div class="preview-title">보호 중인 서비스</div>
+        <button class="preview-view" onclick="location.href='linked-accounts.html'">12곳 모두 보기 ›</button>
+      </div>
+      <div class="svc-preview">
+        <div class="svc-mini" style="background:#FF3B30;">배</div>
+        <div class="svc-name">배달의민족</div>
+        <span class="badge danger">시도 있음</span>
+      </div>
+      <div class="svc-preview">
+        <div class="svc-mini" style="background:#4B7BEC;">쿠</div>
+        <div class="svc-name">쿠팡</div>
+        <span class="badge danger">시도 있음</span>
+      </div>
+      <div class="svc-preview">
+        <div class="svc-mini" style="background:#00A661;">네</div>
+        <div class="svc-name">네이버쇼핑</div>
+        <span class="badge warning">결제수단 있음</span>
+      </div>
+    </div>
+
+    <!-- 통제감 회복 안내 -->
+    <div class="action-hint">
+      <span class="h-icon">💡</span>
+      <div>비밀번호를 변경하면 모든 보호가 자동으로 해제되고,<br>다시 평소처럼 결제할 수 있어요.</div>
+    </div>
+
+    </div><!-- /scroll-area -->
+
+    <!-- 조치 CTA (Actionable First) -->
+    <div class="cta-fixed">
+      <button class="btn primary" onclick="location.href='protect-action.html'">
+        비밀번호 변경하고 모두 해제
+      </button>
+      <button class="btn secondary" onclick="location.href='linked-accounts.html'">
+        하나씩 직접 확인할게요
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
