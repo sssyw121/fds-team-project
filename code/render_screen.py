@@ -161,6 +161,35 @@ def render_linked(doc):
 
 
 
+# keep-* 화면도 같은 사례로 채운다.
+# 서비스별 상세(shap-*)와 유지확인(keep-*)이 같은 결제를 가리키므로 짝을 맞춘다.
+KEEP_MAP = {
+    "keep-starbucks.html": SHAP_MAP["shap-starbucks.html"],
+    "keep-coupang.html":   SHAP_MAP["shap-coupang.html"],
+    "keep-confirm.html":   SHAP_MAP["shap-explain.html"],   # 배달의민족
+}
+
+
+def strip_qty(doc):
+    """품목 문구에서 수량·권종을 떼어낸다.
+
+    원본은 "배민상품권 10만원권 x 3"처럼 수량이 박혀 있어 10만×3=30만원을 함축한다.
+    주입한 실제 금액(예: 100,500원)과 산술이 맞지 않아 보는 사람이 혼동한다.
+    없는 수량을 지어내지 않고 **권종 표기만 제거**해 모순을 없앤다.
+    """
+    return re.sub(r'(배민상품권|쿠팡 상품권|스타벅스 e카드 충전)\s*(?:\d+만원권(?:\s*x\s*\d+)?|\d+만원)',
+                  r'\1', doc)
+
+
+def render_keep(doc, data):
+    """유지 확인 화면 — 차단됐던 시도의 시각·금액을 실제 값으로"""
+    t = data["target"]
+    if t:
+        doc = re.sub(r'>0[0-9]:[0-9]{2}<', f'>{t["time"]}<', doc, count=1)
+        doc = re.sub(r'>\d{2,3},\d{3}원<', f'>{t["amount"]:,}원<', doc, count=1)
+    return doc.replace("</body>", badge(data) + "</body>", 1)
+
+
 # ── 데모 내비게이션 ────────────────────────────────────────────────
 # retry-lock.html 은 팀원 프로토타입에서 **들어오는 링크가 0개**라
 # 클릭으로 도달할 수 없다(화면은 만들었으나 연결이 빠짐).
@@ -208,6 +237,7 @@ def demo_nav(fname):
 
 RENDERERS = {**{k: (lambda d, data=v: render_shap(d, data)) for k, v in SHAP_MAP.items()},
              "home-alert.html": render_home_alert,
+             **{k: (lambda d, data=v: render_keep(d, data)) for k, v in KEEP_MAP.items()},
              "linked-accounts.html": render_linked,
              "retry-lock.html":     lambda d: render_retry_branch(d, "B. 원래 연락처로 재알림"),
              "re-detected.html":    lambda d: render_retry_branch(d, "C. 재감지 — 실제 탈취 확인"),
@@ -226,6 +256,7 @@ if __name__ == "__main__":
             except Exception as e:
                 tag = f"⚠ 주입 실패({e.__class__.__name__}) — 원본 사용"
         doc = doc.replace("</body>", demo_nav(src.name) + "</body>", 1)
+        doc = strip_qty(doc)
         (OUT / src.name).write_text(inline_css(doc), encoding="utf-8")
         made.append(src.name)
         print(f"  {src.name:26s} {tag}")
